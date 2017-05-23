@@ -1,6 +1,7 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab-Create
 
+Markup:
 <h2>DAY 1:</h2>
   * Trying basic examples as given on Forums and Tutorial sites
   * Basic program of reading CSV Files using CSV Package of python
