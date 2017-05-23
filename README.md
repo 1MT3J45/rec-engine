@@ -1,22 +1,25 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab-Create
 
-Markup:
-<h2>DAY 1:</h2>
-Markup :  * Trying basic examples as given on Forums and Tutorial sites
-  * Basic program of reading CSV Files using CSV Package of python
 
-<h2>DAY 2:</h2>
-Markup :  * Vidhya Analytocs example's errors partly resolved
+## DAY 1:
+"Markup :  
+  * Trying basic examples as given on Forums and Tutorial sites
+  * Basic program of reading CSV Files using CSV Package of python"
+
+## DAY 2:
+"Markup :
+  * Vidhya Analytocs example's errors partly resolved
   * Installation of GraphLab needs:
     * Anaconda 2.1 / 2.4
     * A registered Email & Product Key (No Payment required) from Turi is required (1 Year Validity)
     * Pip version >= 7 **(Using 9.0.1)**
     * Python 2.7 **(Using Py 3.5)**
-  * Installation Guide for Anaconda and GraphLab available on: [Turi](https://turi.com/download/install-graphlab-create.html)
+  * Installation Guide for Anaconda and GraphLab available on: [Turi](https://turi.com/download/install-graphlab-create.html)"
 
 <h2>DAY 3:</h2>
-Markup :  * Installation partially successfuldue to misconfiguration of Python version
+"Markup :
+  * Installation partially successfuldue to misconfiguration of Python version
   * Anaconda to work only with Python 2.7 **(Using Py 2.7)**
   * Downgraded all Anaconda Packages w.r.t. Python 2.7 for version dependency
   * Downgrade Package: conda install python=2.7
