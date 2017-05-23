@@ -31,6 +31,6 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
  * Add package of GraphLab in PyCharm
   > FILE -> Settings -> Project:<Project_Name> -> Project Interpreter (2.7) -> GraphLab-create (TA DA! DONE!)
  * Verify if it's working in IDE (Restart PyCharm): Open Python Console in IDE (Bottom-Left) and Type in
-  */>>> import graphlab
+  * >>> import graphlab
   If you get the similar output then it is successfully done
   "Backend TkAgg is interactive backend. Turning interactive mode on. This non-commercial license of GraphLab Create for academic use is assigned to YOUR-EMAIL@gmail.com and will expire on 1 Year from today. [INFO] graphlab.cython.cy_server: GraphLab Create v2.1 started. Logging: /tmp/graphlab_server_1495533712.log""
