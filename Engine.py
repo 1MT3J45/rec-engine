@@ -47,3 +47,5 @@ popularity_model = graphlab.popularity_recommender.create(train_data, user_id='u
 # k=5 specifies top 5 recommendations to be given
 popularity_recomm = popularity_model.recommend(users=range(112,220),k=5)
 popularity_recomm.print_rows(num_rows=31)
+
+pd.read_csv()
