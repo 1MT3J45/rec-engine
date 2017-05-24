@@ -3,22 +3,21 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 
 
 ## DAY 1:
-"Markup :  
+
   * Trying basic examples as given on Forums and Tutorial sites
-  * Basic program of reading CSV Files using CSV Package of python"
+  * Basic program of reading CSV Files using CSV Package of python
 
 ## DAY 2:
-"Markup :
+
   * Vidhya Analytics example's errors partly resolved
   * Installation of GraphLab needs:
     * Anaconda 2.1 / 2.4
     * A registered Email & Product Key (No Payment required) from Turi is required (1 Year Validity)
     * Pip version >= 7 **(Using 9.0.1)**
     * Python 2.7 **(Using Py 3.5)**
-  * Installation Guide for Anaconda and GraphLab available on: [Turi](https://turi.com/download/install-graphlab-create.html)"
+  * Installation Guide for Anaconda and GraphLab available on: [Turi](https://turi.com/download/install-graphlab-create.html)
 
 ## DAY 3:
-"Markup :
  * Installation partially successfully due to misconfiguration of Python version
  * Anaconda to work only with Python 2.7 **(Using Py 2.7)**
  * Downgraded all Anaconda Packages w.r.t. Python 2.7 for version dependency
@@ -33,4 +32,11 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
     * Verify if it's working in IDE (Restart PyCharm): Open Python Console in IDE (Bottom-Left) and Type in
     * > import graphlab
     If you get the similar output then it is successfully done
-    * > "Backend TkAgg is interactive backend. Turning interactive mode on. This non-commercial license of GraphLab Create for academic use is assigned to YOUR-EMAIL@gmail.com and will expire on 1 Year from today. [INFO] graphlab.cython.cy_server: GraphLab Create v2.1 started. Logging: /tmp/graphlab_server_1495533712.log""
+    * > "Backend TkAgg is interactive backend. Turning interactive mode on. This non-commercial license of GraphLab Create for academic use is assigned to YOUR-EMAIL@gmail.com and will expire on 1 Year from today. [INFO] graphlab.cython.cy_server: GraphLab Create v2.1 started. Logging: /tmp/graphlab_server_1495533712.log"
+
+## DAY 4 | 24th April, Wed
+* Studied Documentation for Dataframe & CSV Write
+* Generated recommendations based on average rating directed by AnalyticsVidhya
+* Tried testing - Cross referencing 2 csv files & interchanging values (Yet to be completed)
+* Testing Data & Training Data availed, need to proceed with required algorithms
+* Learnt changing Data from SFRAME TO DATAFRAME TO CSV File
