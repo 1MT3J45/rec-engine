@@ -19,17 +19,21 @@ i_cols = ['movie id', 'movie title', 'release date', 'video release date', 'IMDb
           'Musical', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'War', 'Western']
 items = pd.read_csv('ml-100k/u.item', sep='|', names=i_cols, encoding='latin-1')
 
-print(users.shape)
-users.head()
+print(users.shape)  # Printing Rows x Cols for USERS
+users.head()        # Printing only Headers than entire data
 
-print(ratings.shape)
-ratings.head()
+print(ratings.shape) # Printing Rows x Cols for Ratings
+ratings.head()       # Printing only Headers than entire data
 
-print(items.shape)
-items.head()
+print(items.shape) # Printing Rows x Cols for ITEMS
+items.head()       # Printing only Headers than entire data
 
+
+# Fetching DB of Ratings per Movie for every user
 r_cols = ['user_id', 'movie_id', 'rating', 'unix_timestamp']
 ratings_base = pd.read_csv('ml-100k/ua.base', sep='\t', names=r_cols, encoding='latin-1')
+
+# Fetching DB of Testing Data for Movies Users have Rated
 ratings_test = pd.read_csv('ml-100k/ua.test', sep='\t', names=r_cols, encoding='latin-1')
 info = pd.read_csv('ml-100k/u.info', sep='|')
 
@@ -51,29 +55,29 @@ test_data = graphlab.SFrame(ratings_test)
 print ("________ TRAIN DATA __________")
 print (train_data)
 
-df1 = train_data.to_dataframe()
-df1.to_csv("train_data.csv", sep=",")
+# ____________ DEFINING POPULARITY MODEL _______________
 
-#with open('train_data.csv','wb') as myfile:
-#    wr = csv.writer(myfile)
-#    wr.writerow(train_data)
-#myfile.close()
-#-----------------------REPLACING MOVIE ID WITH MOVIE NAMES-----#
+popularity_model = graphlab.popularity_recommender.create(train_data, user_id='user_id', item_id='movie_id', target='rating')
 
-f = open('ml-100k/u.item', 'rw')
-fo = open('train_data.csv', 'rw')
+#Get recommendations for first 5 users and print them
+#users = range(1,6) specifies user ID of first 5 users
+#k=5 specifies top 5 recommendations to be given
+popularity_recomm = popularity_model.recommend(users=range(1,6),k=5)
+popularity_recomm.print_rows(num_rows=25)
 
-# go through each line of the file
-#for line in f:
-#    bits = line.split('|')
-    # change second column
-#    bits[1] = 'name'
-    # join it back together and write it out
-#    fo.write(','.join(bits))
-#print (f.read())
+shortrate = ratings_base.groupby(by='movie_id')['rating'].mean().sort_values(ascending=False).head(20)
+print (shortrate)
 
-f.close()
-fo.close()
-#x = open("out.csv")
-#y = x.read()
-#print (y)
+# print ("***********_______TO BE USED LATER________************")
+# df1 = train_data.to_dataframe()
+# df1.to_csv("train_data.csv", sep=",")
+
+# print ("________DF1-PRINTED________")
+# print (df1) # .set_index("ID")['MOVIE NAME (YEAR)'])
+
+# df2=df1
+# df3= pd.read_csv('ml-100k/u.item',sep='|')
+# df2['movie_name'] = df2['movie_id'].replace(df3.set_index('ID')['MOVIE NAME (YEAR)'])
+#print ("________ DF2-PRINTED________")
+# print (df2)
+
