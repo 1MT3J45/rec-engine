@@ -40,3 +40,7 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 * Tried testing - Cross referencing 2 csv files & interchanging values (Yet to be completed)
 * Testing Data & Training Data availed, need to proceed with required algorithms
 * Learnt changing Data from SFRAME TO DATAFRAME TO CSV File
+
+## DAY 5 | 25th May, Thu
+* Added popularity Model
+* Testing succefull for interchanging, appending and matching values from cols from one Sframe to other
