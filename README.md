@@ -43,4 +43,11 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 
 ## DAY 5 | 25th May, Thu
 * Added popularity Model
-* Testing succefull for interchanging, appending and matching values from cols from one Sframe to other
+* Testing successfull for interchanging, appending and matching values from cols from one Sframe to other
+
+## DAY 6 | 26th May, Fri
+* Similarity model generated
+* Recommendation based on
+    * Pearson - GARBLED
+    * Jaccard - SUCCESS
+    * Cosine - SUCCESS
