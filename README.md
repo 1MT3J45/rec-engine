@@ -12,7 +12,7 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
   * Vidhya Analytics example's errors partly resolved
   * Installation of GraphLab needs:
     * Anaconda 2.1 / 2.4
-    * A registered Email & Product Key (No Payment required) from Turi is required (1 Year Validity)
+    * A registered Email & Product Key (**No Payment** required) from Turi is required (1 Year Validity)
     * Pip version >= 7 **(Using 9.0.1)**
     * Python 2.7 **(Using Py 3.5)**
   * Installation Guide for Anaconda and GraphLab available on: [Turi](https://turi.com/download/install-graphlab-create.html)
