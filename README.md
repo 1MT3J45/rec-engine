@@ -50,8 +50,21 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
     * Jaccard - SUCCESS
     * Cosine - SUCCESS
 
-## DAY 7 | 3rd June, Sat
+## DAY 7 | 27th May
+	* Studying Sheet Data
+		* K - Fold Cross Validations
+			* http://www.dummies.com/programming/big-data/data-science/data-science-cross-validating-in-python/
+			* https://www.analyticsvidhya.com/blog/2015/11/improve-model-performance-cross-validation-in-python-r/
+		* Weighted Algorithm
+			* https://stackoverflow.com/questions/18419962/how-to-compute-weighted-sum-of-all-elements-in-a-row-in-pandas
+		* RMSE
+			* https://stackoverflow.com/questions/33458959/finding-root-mean-squared-error-with-pandas-dataframe
+
+## DAY 8 | 3rd June, Sat
 * Learning RMSE, MSE, MAE
 
-## DAY 8 | 4th June, Sun
-*
+## DAY 9 | 4th June, Sun
+* Generated results for Jaccard, Cosine for ITEM BASED CF
+* Garbled Recommendation for Pearson for ITEM BASED CF
+* Stored Results for Jaccard and Cosine
+* Working initiated for USER BASED CF
