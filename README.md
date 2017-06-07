@@ -68,3 +68,12 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 * Garbled Recommendation for Pearson for ITEM BASED CF
 * Stored Results for Jaccard and Cosine
 * Working initiated for USER BASED CF
+
+## DAY 10 | 5th June, Mon
+* Attempted making DataProcessing Engine and Algo Unit
+* Successfull Python Serialization for Training and Testing data between Engine and Unit
+* Item based Collaboration complete
+
+## DAY 11 | 6th June, Tue
+* Exploring options for User based collaborative filering
+*
