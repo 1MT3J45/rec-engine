@@ -1,6 +1,7 @@
 import pandas as pd
 import graphlab
 import time
+import pickle
 
 # pass in column names for each CSV and read them using pandas.
 # Column names available in the readme file
@@ -55,9 +56,13 @@ test_data = graphlab.SFrame(ratings_test)
 print ("________ TRAIN DATA __________")
 print (train_data)
 
+train_data.to_dataframe().to_pickle(r'train_data.pickle')
+test_data.to_dataframe().to_pickle(r'test_data.pickle')
 # ____________ DEFINING POPULARITY MODEL _______________
 
 popularity_model = graphlab.popularity_recommender.create(train_data, user_id='user_id', item_id='movie_id', target='rating')
+print (")))))))))))",type(popularity_model))
+popularity_model.save('pop_model')
 
 # Get recommendations for first 5 users and print them
 # users = range(1,6) specifies user ID of first 5 users
@@ -69,11 +74,13 @@ popularity_recomm.print_rows(num_rows=25)
 print ("________ RATINGS BASE __________")
 print(ratings_base.groupby(by='movie_id')['rating'].mean().sort_values(ascending=False).head(20))
 
-# Preparing an ITEM Similarity model
 
+
+# Preparing an ITEM Similarity model
+algo = raw_input("Type in the Name of algorithm: \n Cosine | Jaccard | Pearson: ")
 # Train Model
 item_sim_model = graphlab.item_similarity_recommender.create(train_data, user_id='user_id', item_id='movie_id',
-                                                             target='rating', similarity_type='cosine')
+                                                             target='rating', similarity_type=algo)
 # Make Recommendations
 item_sim_recomm = item_sim_model.recommend(users=range(1,6),k=5)
 item_sim_recomm.print_rows(num_rows=25)
@@ -91,6 +98,7 @@ print (df_item_sim)
 
 model_performance = graphlab.compare(test_data, [popularity_model, item_sim_model])
 graphlab.show_comparison(model_performance, [popularity_model, item_sim_model])
+
 time.sleep(180)
 # print ("***********_______TO BE USED LATER________************")
 # df1 = train_data.to_dataframe()
