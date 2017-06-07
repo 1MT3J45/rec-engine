@@ -51,13 +51,13 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
     * Cosine - SUCCESS
 
 ## DAY 7 | 27th May
-	* Studying Sheet Data
-		* K - Fold Cross Validations
-			* http://www.dummies.com/programming/big-data/data-science/data-science-cross-validating-in-python/
-			* https://www.analyticsvidhya.com/blog/2015/11/improve-model-performance-cross-validation-in-python-r/
-		* Weighted Algorithm
-			* https://stackoverflow.com/questions/18419962/how-to-compute-weighted-sum-of-all-elements-in-a-row-in-pandas
-		* RMSE
+* Studying Sheet Data
+	* K - Fold Cross Validations
+		* http://www.dummies.com/programming/big-data/data-science/data-science-cross-validating-in-python/
+		* https://www.analyticsvidhya.com/blog/2015/11/improve-model-performance-cross-validation-in-python-r/
+	* Weighted Algorithm
+		* https://stackoverflow.com/questions/18419962/how-to-compute-weighted-sum-of-all-elements-in-a-row-in-pandas
+	* RMSE
 			* https://stackoverflow.com/questions/33458959/finding-root-mean-squared-error-with-pandas-dataframe
 
 ## DAY 8 | 3rd June, Sat
