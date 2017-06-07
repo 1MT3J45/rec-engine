@@ -41,7 +41,7 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 
 ## DAY 5 | 25th May, Thu
 * Added popularity Model
-* Testing successfull for interchanging, appending and matching values from cols from one Sframe to other
+* Testing successful for interchanging, appending and matching values from cols from one Sframe to other
 
 ## DAY 6 | 26th May, Fri
 * Similarity model generated
@@ -71,9 +71,13 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 
 ## DAY 10 | 5th June, Mon
 * Attempted making DataProcessing Engine and Algo Unit
-* Successfull Python Serialization for Training and Testing data between Engine and Unit
+* Successful Python Serialization for Training and Testing data between Engine and Unit
 * Item based Collaboration complete
 
 ## DAY 11 | 6th June, Tue
 * Exploring options for User based collaborative filering
-*
+
+## DAY 12 | 7th June, Wed
+* Engine 2 for UBCF ready
+* KFold Cross Validation searching
+* Training & Testing data ready
