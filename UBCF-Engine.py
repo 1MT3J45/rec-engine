@@ -1,5 +1,6 @@
 import pandas as pd
 import graphlab
+import numpy as np
 import time
 import pickle
 
@@ -58,3 +59,4 @@ print (train_data)
 
 train_data.to_dataframe().to_pickle(r'train_data.pickle')
 test_data.to_dataframe().to_pickle(r'test_data.pickle')
+

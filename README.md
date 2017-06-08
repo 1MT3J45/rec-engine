@@ -81,3 +81,8 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 * Engine 2 for UBCF ready
 * KFold Cross Validation searching
 * Training & Testing data ready
+
+## DAY 13 | 8th June, Thu
+* Installed sklearn package and used numpy for matrix ops
+* Snippet for UBCF prepared and tested
+* IBCF & UBCF RMSE generated
