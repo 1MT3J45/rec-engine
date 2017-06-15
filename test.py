@@ -1,10 +1,214 @@
-import numpy as np
+
 import pandas as pd
-from sklearn import cross_validation as cv
-from sklearn.metrics.pairwise import pairwise_distances
-from sklearn.metrics import mean_squared_error
+import graphlab
+import time
+import pickle
+
+# pass in column names for each CSV and read them using pandas.
+# Column names available in the readme file
+
+# Reading users file:
+u_cols = ['user_id', 'age', 'sex', 'occupation', 'zip_code']
+users = pd.read_csv('ml-100k/u.user', sep='|', names=u_cols, encoding='latin-1')
+
+# Reading ratings file:
+r_cols = ['user_id', 'movie_id', 'rating', 'unix_timestamp']
+ratings = pd.read_csv('ml-100k/u.data', sep='\t', names=r_cols, encoding='latin-1')
+
+# Reading items file:
+i_cols = ['movie id', 'movie title', 'release date', 'video release date', 'IMDb URL', 'unknown', 'Action', 'Adventure',
+          'Animation', 'Children\'s', 'Comedy', 'Crime', 'Documentary', 'Drama', 'Fantasy', 'Film-Noir', 'Horror',
+          'Musical', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'War', 'Western']
+items = pd.read_csv('ml-100k/u.item', sep='|', names=i_cols, encoding='latin-1')
+
+print(users.shape)  # Printing Rows x Cols for USERS
+users.head()        # Not Printing only Headers than entire data
+
+print(ratings.shape) # Printing Rows x Cols for Ratings
+ratings.head()       # Not Printing only Headers than entire data
+
+print(items.shape) # Printing Rows x Cols for ITEMS
+items.head()       # Not Printing only Headers than entire data
+
+
+# Fetching DB of Ratings per Movie for every user
+r_cols = ['user_id', 'movie_id', 'rating', 'unix_timestamp']
+ratings_base = pd.read_csv('ml-100k/u2.base', sep='\t', names=r_cols, encoding='latin-1')
+
+# Fetching DB of Testing Data for Movies Users have Rated
+ratings_test = pd.read_csv('ml-100k/u2.test', sep='\t', names=r_cols, encoding='latin-1')
+info = pd.read_csv('ml-100k/u.info', sep='|')
+
+print ("________ RATING SIZE __________")
+print(ratings_base.shape)
+
+print ("________ RATING BASE __________")
+print(ratings_base)
+
+print ("________ RATING TEST __________")
+print(ratings_test)
+
+print ("________ GEN. INFO __________")
+print(info)
+
+train_data = graphlab.SFrame(ratings_base)
+test_data = graphlab.SFrame(ratings_test)
+
+print ("________ TRAIN DATA __________")
+print (train_data)
+
+train_data.to_dataframe().to_pickle(r'train_data.pickle')
+test_data.to_dataframe().to_pickle(r'test_data.pickle')
+# ____________ DEFINING POPULARITY MODEL _______________
+
+popularity_model = graphlab.popularity_recommender.create(train_data, user_id='user_id', item_id='movie_id', target='rating')
+print ("[ POPULARITY MODEL TYPE >",type(popularity_model)," < ]")
+popularity_model.save('pop_model')
+
+# Get recommendations for first 5 users and print them
+# users = range(1,6) specifies user ID of first 5 users
+# k=5 specifies top 5 recommendations to be given
+print ("______ POPULARITY MODEL ________")
+popularity_recomm = popularity_model.recommend(users=range(1,6),k=5)
+popularity_recomm.print_rows(num_rows=25)
+
+print ("________ RATINGS BASE __________")
+print(ratings_base.groupby(by='movie_id')['rating'].mean().sort_values(ascending=False).head(20))
+
+
+
+# Preparing an ITEM Similarity model
+# import code
+from movieds import dataset
 from math import sqrt
 
+
+def sums(sum_of_euclidean_distance):
+    pass
+
+
+def similarity_score(person1, person2):
+    # This Returns the ration euclidean distance score of person 1 and 2
+
+    # To get both rated items by person 1 and 2
+    both_viewed = {}
+
+    for item in dataset[person1]:
+        if item in dataset[person2]:
+            both_viewed[item] = 1
+
+        # The Conditions to check if they both have common rating items
+        if len(both_viewed) == 0:
+            return 0
+
+        # Finding Euclidean distance
+        sum_of_euclidean_distance = []
+
+        for item in dataset[person1]:
+            if item in dataset[person2]:
+                sum_of_euclidean_distance.append(pow(dataset[person1][item] - dataset[person2][item], 2))
+        sum_of_euclidean_distance = sums(sum_of_euclidean_distance)
+
+        return 1 / (1 + sqrt(sum_of_euclidean_distance))
+
+
+def pearson_correlation(person1, person2):
+    # To get both rated items
+    both_rated = {}
+    for item in dataset[person1]:
+        if item in dataset[person2]:
+            both_rated[item] = 1
+
+    number_of_ratings = len(both_rated)
+
+    # Checking for ratings in common
+    if number_of_ratings == 0:
+        return 0
+
+    # Add up all the preferences of each user
+    person1_preferences_sum = sum([dataset[person1][item] for item in both_rated])
+    person2_preferences_sum = sum([dataset[person2][item] for item in both_rated])
+
+    # Sum up the squares of preferences of each user
+    person1_square_preferences_sum = sum([pow(dataset[person1][item], 2) for item in both_rated])
+    person2_square_preferences_sum = sum([pow(dataset[person2][item], 2) for item in both_rated])
+
+    # Sum up the product value of both preferences for each item
+    product_sum_of_both_users = sum([dataset[person1][item] * dataset[person2][item] for item in both_rated])
+
+    # Calculate the pearson score
+    numerator_value = product_sum_of_both_users - (
+    person1_preferences_sum * person2_preferences_sum / number_of_ratings)
+    denominator_value = sqrt((person1_square_preferences_sum - pow(person1_preferences_sum, 2) / number_of_ratings) * (
+    person2_square_preferences_sum - pow(person2_preferences_sum, 2) / number_of_ratings))
+
+    if denominator_value == 0:
+        return 0
+    else:
+        r = numerator_value / denominator_value
+        return r
+
+
+def most_similar_users(person, number_of_users):
+    # returns the number_of_users (similar persons) for a given specific person
+    scores = [(pearson_correlation(person, other_person), other_person) for other_person in dataset if
+              other_person != person]
+
+    # Sort the similar persons so the highest scores person will appear at the first
+    scores.sort()
+    scores.reverse()
+    return scores[0:number_of_users]
+
+
+def user_recommendations(person):
+    # Gets recommendations for a person by using a weighted average of every other user's rankings
+    totals = {}
+    simSums = {}
+    rankings_list = []
+    for other in dataset:
+        # don't compare me to myself
+        if other == person:
+            continue
+        sim = pearson_correlation(person, other)
+        print "UBCF Similarity>>>", sim
+
+        # ignore scores of zero or lower
+        if sim <= 0:
+            continue
+        for item in dataset[other]:
+
+            # only score movies i haven't seen yet
+            if item not in dataset[person] or dataset[person][item] == 0:
+                # Similarity * score
+                totals.setdefault(item, 0)
+                totals[item] += dataset[other][item] * sim
+                # sum of similarities
+                simSums.setdefault(item, 0)
+                simSums[item] += sim
+                # print dataset[item]
+                # Create the normalized list
+
+    rankings = [(total / simSums[item], item) for item, total in totals.items()]
+    rankings.sort()
+    rankings.reverse()
+    # returns the recommended items
+    recommendataions_list = [recommend_item for score, recommend_item in rankings]
+    return recommendataions_list
+
+
+io = raw_input("Enter Name of user: ")
+print user_recommendations(io)
+
+
+# _____________________ TRIAL FIVE _______________________________
+# import numpy as np
+# import pandas as pd
+# from sklearn import cross_validation as cv
+# from sklearn.metrics.pairwise import pairwise_distances
+# from sklearn.metrics import mean_squared_error
+# from math import sqrt
+
+'''
 header = ['user_id', 'item_id', 'rating', 'timestamp']
 df = pd.read_csv('ml-100k/u.data', sep='\t', names=header)
 
@@ -50,6 +254,7 @@ print 'Item-based CF RMSE: ' + str(rmse(item_prediction, test_data_matrix))
 
 sparsity=round(1.0-len(df)/float(n_users*n_items),3)
 print 'The sparsity level of MovieLens100K is ' +  str(sparsity*100) + '%'
+'''
 
 # ____________________________ TRIAL FOUR ___________________________________
 #import pandas as pd

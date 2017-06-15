@@ -86,3 +86,7 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 * Installed sklearn package and used numpy for matrix ops
 * Snippet for UBCF prepared and tested
 * IBCF & UBCF RMSE generated
+
+## DAY 14 | 14th June, Wed
+* Prep-ing UBCF on Movielens Dataset
+* Uploaded small UBCF Model
