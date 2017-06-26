@@ -90,3 +90,7 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 ## DAY 14 | 14th June, Wed
 * Prep-ing UBCF on Movielens Dataset
 * Uploaded small UBCF Model
+
+## DAY 15 | 26th June, Thu
+* Attempt on generating the Matrix with 'NaN'
+* Installed Surprise, Recsys
