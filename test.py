@@ -62,7 +62,7 @@ test_data.to_dataframe().to_pickle(r'test_data.pickle')
 # ____________ DEFINING POPULARITY MODEL _______________
 
 popularity_model = graphlab.popularity_recommender.create(train_data, user_id='user_id', item_id='movie_id', target='rating')
-print ("[ POPULARITY MODEL TYPE >",type(popularity_model)," < ]")
+print ("[|||||||POPULARITY MODEL TYPE >",type(popularity_model)," < ]")
 popularity_model.save('pop_model')
 
 # Get recommendations for first 5 users and print them
@@ -77,15 +77,15 @@ print(ratings_base.groupby(by='movie_id')['rating'].mean().sort_values(ascending
 
 
 
-# Preparing an ITEM Similarity model
-# import code
-from movieds import dataset
+# Preparing a USER Similarity model
 from math import sqrt
 
 
 def sums(sum_of_euclidean_distance):
     pass
 
+ml_dataset = pd.read_csv('ml-100k/u.data')
+dataset = pd.read_csv('ml-100k/u.data',)
 
 def similarity_score(person1, person2):
     # This Returns the ration euclidean distance score of person 1 and 2
@@ -196,7 +196,7 @@ def user_recommendations(person):
     return recommendataions_list
 
 
-io = raw_input("Enter Name of user: ")
+io = raw_input("Enter User ID: ")
 print user_recommendations(io)
 
 

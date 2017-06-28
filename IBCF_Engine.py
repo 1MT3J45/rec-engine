@@ -1,7 +1,8 @@
 import pandas as pd
 import graphlab
 import time
-import pickle
+#   import recsys
+# import pickle
 
 # pass in column names for each CSV and read them using pandas.
 # Column names available in the readme file
@@ -56,8 +57,8 @@ test_data = graphlab.SFrame(ratings_test)
 print ("________ TRAIN DATA __________")
 print (train_data)
 
-train_data.to_dataframe().to_pickle(r'train_data.pickle')
-test_data.to_dataframe().to_pickle(r'test_data.pickle')
+# train_data.to_dataframe().to_pickle(r'train_data.pickle')
+# test_data.to_dataframe().to_pickle(r'test_data.pickle')
 # ____________ DEFINING POPULARITY MODEL _______________
 
 popularity_model = graphlab.popularity_recommender.create(train_data, user_id='user_id', item_id='movie_id', target='rating')
