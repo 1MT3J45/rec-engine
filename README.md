@@ -94,3 +94,16 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 ## DAY 15 | 26th June, Thu
 * Attempt on generating the Matrix with 'NaN'
 * Installed Surprise, Recsys
+
+## DAY 16 | 28th June, Wed
+* Initiated from Scratch
+* Generation of Matrix with NaN values successful
+
+## DAY 17 | 2nd July, Sun
+* Calculated RMSE and MAE on SVD algorithm
+* Applied K Fold CV with it
+
+## DAY 18 | 3rd July, Mon
+* Calculated RMSE & MAE on Pearson Co-relation and Vector Cosine algorithms
+* Applied K Fold CV with it
+* Working for both USER and ITEM Based CF
