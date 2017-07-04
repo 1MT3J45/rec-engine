@@ -107,3 +107,13 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
 * Calculated RMSE & MAE on Pearson Co-relation and Vector Cosine algorithms
 * Applied K Fold CV with it
 * Working for both USER and ITEM Based CF
+
+## DAY 19 | 4th July, Tue
+* Tested UBCF & IBCF Modules
+* Fixed bugs
+    * Only Algorithm Pearson was working
+    * Path selection for USER Based resolved
+    * User-based predictions now available
+* UBCF & IBCF are now into 2 different methods
+    * Tested with path resolving issues
+    * Tested with parameter passing
