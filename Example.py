@@ -1,28 +1,25 @@
-from sklearn.model_selection import KFold, cross_val_predict, cross_val_score
-from surprise import Reader, Dataset, evaluate, print_perf, SVD, similarities, KNNBasic
-import recsys
-import numpy as np
+from surprise import Reader, Dataset, evaluate, print_perf, KNNBasic
+import io
 import pandas as pd
-import graphlab
+import csv
+# import graphlab
 
-# KNN = recsys.KNNBasic(40,1,{'name':'cosine','user_based':True})
-# print KNN.predict()
 headers = ['UserID', 'MovieID', 'Rating', 'TimeStamp']
 
-# TODO [DONE] Loading Dataset
+# TODO 1 [DONE] Loading Dataset
 df = pd.read_csv('ml-100k/u.data', sep='\t', names=('UserID', 'MovieID', 'Rating', 'TimeStamp'))
 print df.dtypes, '\n', '____________________'
 
 
-# TODO [DONE] Printing only selected columns
+# TODO 2 [DONE] Printing only selected columns
 values = df.values
-print values[:,0:2]
+print values[:, 0:2]
 
-# TODO [DONE] Simple sorting of values
+# TODO 3 [DONE] Simple sorting of values
 df_sorted_values = df.sort_values(['UserID', 'MovieID'])
 print type(df_sorted_values)
 
-# TODO [DONE] Printing Matrix of Dataset with NaN Values
+# TODO 4 [DONE] Printing Matrix of Dataset with NaN Values
 print("*___________________*")
 df_matrix = df.pivot_table(values='Rating', index='UserID', columns='MovieID')
 
@@ -35,46 +32,130 @@ print df_matrix
 
 reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1,5))
 df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
-df.split(n_folds=5)
+df.split(n_folds=2)
 
-# TODO Similarity using KNN basic after applying Pearson & Cosine
+# TODO 6 [DONE] Generate Recommendations based on User/Item for its nearest neighbours
 
+# ----------------------------------------------------------------------------UBCF
+def user_based_cf(co_pe):
+    # INITIALIZE REQUIRED PARAMETERS
+    path = '/home/mister-t/Projects/PycharmProjects/RecommendationSys/ml-100k/u.user'
+    prnt = "USER"
+    sim_op = {'name': co_pe, 'user_based': True}
+    algo = KNNBasic(sim_options=sim_op)
+
+    # RESPONSIBLE TO EXECUTE DATA SPLITS Mentioned in STEP 4
+    perf = evaluate(algo, df, measures=['RMSE', 'MAE'])
+    print_perf(perf)
+    print type(perf)
+
+    # START TRAINING
+    trainset = df.build_full_trainset()
+
+    # APPLYING ALGORITHM KNN Basic
+    res = algo.train(trainset)
+    print "\t\t >>>TRAINED SET<<<<\n\n", res
+
+    # PEEKING PREDICTED VALUES
+    search_key = raw_input("Enter User ID:")
+    item_id = raw_input("Enter Item ID:")
+    actual_rating = input("Enter actual Rating:")
+
+    print algo.predict(str(search_key), item_id, actual_rating)
+
+# ------------------------------------------------------------------READ ITEM NAMES
+def read_item_names(path):
+    """Read the u.item file from MovieLens 100-k dataset and return two
+    mappings to convert raw ids into movie names and movie names into raw ids.
+    """
+
+    file_name = (path)
+    rid_to_name = {}
+    name_to_rid = {}
+    with io.open(file_name, 'r', encoding='ISO-8859-1') as f:
+        for line in f:
+            line = line.split('|')
+            rid_to_name[line[0]] = line[1]
+            name_to_rid[line[1]] = line[0]
+
+    return rid_to_name, name_to_rid
+
+
+# ----------------------------------------------------------------------------IBCF
+def item_based_cf(co_pe):
+    # INITIALIZE REQUIRED PARAMETERS
+    path = '/home/mister-t/Projects/PycharmProjects/RecommendationSys/ml-100k/u.item'
+    prnt = "ITEM"
+    sim_op = {'name': co_pe, 'user_based': False}
+    algo = KNNBasic(sim_options=sim_op)
+
+    # RESPONSIBLE TO EXECUTE DATA SPLITS MENTIONED IN STEP 4
+    perf = evaluate(algo, df, measures=['RMSE', 'MAE'])
+    print_perf(perf)
+    print type(perf)
+
+    # START TRAINING
+    trainset = df.build_full_trainset()
+
+    # APPLYING ALGORITHM KNN Basic
+    res = algo.train(trainset)
+    print "\t\t >>>TRAINED SET<<<<\n\n", res
+
+    # Read the mappings raw id <-> movie name
+    rid_to_name, name_to_rid = read_item_names(path)
+    print "-------------------->3) Choice", choice
+    print "-------------------->Path", path,"\n PRNT", prnt
+
+    search_key = raw_input("ID:")
+    print "ALGORITHM USED : ", one
+    toy_story_raw_id = name_to_rid[search_key]
+    print "\t\t RAW ID>>>>>>>",toy_story_raw_id ,"<<<<<<<"
+    toy_story_inner_id = algo.trainset.to_inner_iid(toy_story_raw_id)
+    print "INNER ID >>>>>",toy_story_inner_id
+    # Retrieve inner ids of the nearest neighbors of Toy Story.
+    k=5
+    toy_story_neighbors = algo.get_neighbors(toy_story_inner_id, k=k)
+
+    # Convert inner ids of the neighbors into names.
+    toy_story_neighbors = (algo.trainset.to_raw_iid(inner_id)
+                       for inner_id in toy_story_neighbors)
+    toy_story_neighbors = (rid_to_name[rid]
+                       for rid in toy_story_neighbors)
+    print 'The ', k,' nearest neighbors of ', search_key,' are:'
+    for movie in toy_story_neighbors:
+        print(movie)
+# METHODS DEFINED PRIOR
+
+# TODO 7 [] Perform K Fold CV on predicted values with Precsion Recall
+
+# The values arrived from
+# t
+# So far
+
+
+# TODO 5 [DONE] Similarity using KNN basic after applying Pearson & Cosine
 ip = raw_input("Enter the choice of algorithm(1. Cosine/2. Pearson):")
+one = None
 
-if ip==1:
+if ip == 1:
     one = 'cosine'
 else:
     one = 'pearson'
 
-cf = raw_input("Filtering Method: \n1.User based \n2.Item based \n Choice:")
+choice = raw_input("Filtering Method: \n1.User based \n2.Item based \n Choice:")
 
-if cf==1:
-    two = True
+if choice == '1':
+    user_based_cf(one)
+elif choice == '2':
+    item_based_cf(one)
 else:
-    two = False
+    sim_op={}
+    exit(0)
 
-sim_op = {'name':one,'user_based':two}
-algo = KNNBasic(sim_options=sim_op)
-
-perf = evaluate(algo,df,measures=['RMSE','MAE'])
-print_perf(perf)
-
-# TODO Generate Recommendations based on User/Item for its nearest neighbours
-
-##algo.train('ml100k/u.data')
-##testset =
-
-# sim = similarities.cosine(10,10,22)
-# print type(sim)
-# predicted = cross_val_predict(X=df,y=None,cv=5)
-# print predicted
-
-# kf = KFold(n_splits=4)
-# for i in kf.split(df):
-#    print ("%d" % (i))
-# TODO To produce recommendations
-
-# TODO Perform K Fold CV on recommendations and print precision & recall
-
-# END
-
+    #
+    #
+    #    csvfile = 'pred_matrix.csv'
+#    with open(csvfile, "w") as output:
+#        writer = csv.writer(output,lineterminator='\n')
+#        for val in algo.predict(str(range(1,943)),range(1,1683),1):
+#            writer.writerow([val])
