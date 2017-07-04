@@ -1,19 +1,91 @@
 # rec-engine
-A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab-Create
+A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 19 | 4th July, Tue
+* Tested UBCF & IBCF Modules
+* Fixed bugs
+    * Only Algorithm Pearson was working
+    * Path selection for USER Based resolved
+    * User-based predictions now available
+* UBCF & IBCF are now into 2 different methods
+    * Tested with path resolving issues
+    * Tested with parameter passing
 
-## DAY 1 | 20th May, Sat
-  * Trying basic examples as given on Forums and Tutorial sites
-  * Basic program of reading CSV Files using CSV Package of python
+## DAY 18 | 3rd July, Mon
+* Calculated RMSE & MAE on Pearson Co-relation and Vector Cosine algorithms
+* Applied K Fold CV with it
+* Working for both USER and ITEM Based CF
 
-## DAY 2 | 22nd May, Mon
-  * Vidhya Analytics example's errors partly resolved
-  * Installation of GraphLab needs:
-    * Anaconda 2.1 / 2.4
-    * A registered Email & Product Key (**No Payment** required) from Turi is required (1 Year Validity)
-    * Pip version >= 7 **(Using 9.0.1)**
-    * Python 2.7 **(Using Py 3.5)**
-  * Installation Guide for Anaconda and GraphLab available on: [Turi](https://turi.com/download/install-graphlab-create.html)
+## DAY 17 | 2nd July, Sun
+* Calculated RMSE and MAE on SVD algorithm
+* Applied K Fold CV with it
+
+## DAY 16 | 28th June, Wed
+* Initiated from Scratch
+* Generation of Matrix with NaN values successful
+
+## DAY 15 | 26th June, Thu
+* Attempt on generating the Matrix with 'NaN'
+* Installed Surprise, Recsys
+
+## DAY 14 | 14th June, Wed
+* Prep-ing UBCF on Movielens Dataset
+* Uploaded small UBCF Model
+
+## DAY 13 | 8th June, Thu
+* Installed sklearn package and used numpy for matrix ops
+* Snippet for UBCF prepared and tested
+* IBCF & UBCF RMSE generated
+
+## DAY 12 | 7th June, Wed
+* Engine 2 for UBCF ready
+* KFold Cross Validation searching
+* Training & Testing data ready
+
+## DAY 11 | 6th June, Tue
+* Exploring options for User based collaborative filering
+
+## DAY 10 | 5th June, Mon
+* Attempted making DataProcessing Engine and Algo Unit
+* Successful Python Serialization for Training and Testing data between Engine and Unit
+* Item based Collaboration complete
+
+## DAY 9 | 4th June, Sun
+* Generated results for Jaccard, Cosine for ITEM BASED CF
+* Garbled Recommendation for Pearson for ITEM BASED CF
+* Stored Results for Jaccard and Cosine
+* Working initiated for USER BASED CF
+
+## DAY 8 | 3rd June, Sat
+* Learning RMSE, MSE, MAE
+
+## DAY 7 | 27th May
+* Studying Sheet Data
+	* K - Fold Cross Validations
+		* http://www.dummies.com/programming/big-data/data-science/data-science-cross-validating-in-python/
+		* https://www.analyticsvidhya.com/blog/2015/11/improve-model-performance-cross-validation-in-python-r/
+	* Weighted Algorithm
+		* https://stackoverflow.com/questions/18419962/how-to-compute-weighted-sum-of-all-elements-in-a-row-in-pandas
+	* RMSE
+			* https://stackoverflow.com/questions/33458959/finding-root-mean-squared-error-with-pandas-dataframe
+
+## DAY 6 | 26th May, Fri
+* Similarity model generated
+* Recommendation based on
+    * Pearson - GARBLED
+    * Jaccard - SUCCESS
+    * Cosine - SUCCESS
+
+## DAY 5 | 25th May, Thu
+* Added popularity Model
+* Testing successful for interchanging, appending and matching values from cols from one Sframe to other
+
+## DAY 4 | 24th May, Wed
+* Studied Documentation for Dataframe & CSV Write
+* Generated recommendations based on average rating directed by AnalyticsVidhya
+* Tried testing - Cross referencing 2 csv files & interchanging values (Yet to be completed)
+* Testing Data & Training Data availed, need to proceed with required algorithms
+* Learnt changing Data from SFRAME TO DATAFRAME TO CSV File
 
 ## DAY 3 | 23rd May, Tue
  * Installation partially successfully due to misconfiguration of Python version
@@ -32,88 +104,47 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python GraphLab
     If you get the similar output then it is successfully done
     * > "Backend TkAgg is interactive backend. Turning interactive mode on. This non-commercial license of GraphLab Create for academic use is assigned to YOUR-EMAIL@gmail.com and will expire on 1 Year from today. [INFO] graphlab.cython.cy_server: GraphLab Create v2.1 started. Logging: /tmp/graphlab_server_1495533712.log"
 
-## DAY 4 | 24th May, Wed
-* Studied Documentation for Dataframe & CSV Write
-* Generated recommendations based on average rating directed by AnalyticsVidhya
-* Tried testing - Cross referencing 2 csv files & interchanging values (Yet to be completed)
-* Testing Data & Training Data availed, need to proceed with required algorithms
-* Learnt changing Data from SFRAME TO DATAFRAME TO CSV File
+## DAY 2 | 22nd May, Mon
+  * Vidhya Analytics example's errors partly resolved
+  * Installation of GraphLab needs:
+    * Anaconda 2.1 / 2.4
+    * A registered Email & Product Key (**No Payment** required) from Turi is required (1 Year Validity)
+    * Pip version >= 7 **(Using 9.0.1)**
+    * Python 2.7 **(Using Py 3.5)**
+  * Installation Guide for Anaconda and GraphLab available on: [Turi](https://turi.com/download/install-graphlab-create.html)
 
-## DAY 5 | 25th May, Thu
-* Added popularity Model
-* Testing successful for interchanging, appending and matching values from cols from one Sframe to other
+## DAY 1 | 20th May, Sat
+  * Trying basic examples as given on Forums and Tutorial sites
+  * Basic program of reading CSV Files using CSV Package of python
 
-## DAY 6 | 26th May, Fri
-* Similarity model generated
-* Recommendation based on
-    * Pearson - GARBLED
-    * Jaccard - SUCCESS
-    * Cosine - SUCCESS
 
-## DAY 7 | 27th May
-* Studying Sheet Data
-	* K - Fold Cross Validations
-		* http://www.dummies.com/programming/big-data/data-science/data-science-cross-validating-in-python/
-		* https://www.analyticsvidhya.com/blog/2015/11/improve-model-performance-cross-validation-in-python-r/
-	* Weighted Algorithm
-		* https://stackoverflow.com/questions/18419962/how-to-compute-weighted-sum-of-all-elements-in-a-row-in-pandas
-	* RMSE
-			* https://stackoverflow.com/questions/33458959/finding-root-mean-squared-error-with-pandas-dataframe
 
-## DAY 8 | 3rd June, Sat
-* Learning RMSE, MSE, MAE
 
-## DAY 9 | 4th June, Sun
-* Generated results for Jaccard, Cosine for ITEM BASED CF
-* Garbled Recommendation for Pearson for ITEM BASED CF
-* Stored Results for Jaccard and Cosine
-* Working initiated for USER BASED CF
 
-## DAY 10 | 5th June, Mon
-* Attempted making DataProcessing Engine and Algo Unit
-* Successful Python Serialization for Training and Testing data between Engine and Unit
-* Item based Collaboration complete
 
-## DAY 11 | 6th June, Tue
-* Exploring options for User based collaborative filering
 
-## DAY 12 | 7th June, Wed
-* Engine 2 for UBCF ready
-* KFold Cross Validation searching
-* Training & Testing data ready
 
-## DAY 13 | 8th June, Thu
-* Installed sklearn package and used numpy for matrix ops
-* Snippet for UBCF prepared and tested
-* IBCF & UBCF RMSE generated
 
-## DAY 14 | 14th June, Wed
-* Prep-ing UBCF on Movielens Dataset
-* Uploaded small UBCF Model
 
-## DAY 15 | 26th June, Thu
-* Attempt on generating the Matrix with 'NaN'
-* Installed Surprise, Recsys
 
-## DAY 16 | 28th June, Wed
-* Initiated from Scratch
-* Generation of Matrix with NaN values successful
 
-## DAY 17 | 2nd July, Sun
-* Calculated RMSE and MAE on SVD algorithm
-* Applied K Fold CV with it
 
-## DAY 18 | 3rd July, Mon
-* Calculated RMSE & MAE on Pearson Co-relation and Vector Cosine algorithms
-* Applied K Fold CV with it
-* Working for both USER and ITEM Based CF
 
-## DAY 19 | 4th July, Tue
-* Tested UBCF & IBCF Modules
-* Fixed bugs
-    * Only Algorithm Pearson was working
-    * Path selection for USER Based resolved
-    * User-based predictions now available
-* UBCF & IBCF are now into 2 different methods
-    * Tested with path resolving issues
-    * Tested with parameter passing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
