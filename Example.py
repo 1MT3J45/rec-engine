@@ -32,10 +32,10 @@ print df_matrix
 
 
 # ----------------------------------------------------------------SPLITTER
-def splitter(fold):
-    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1,5))
-    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
-    df.split(fold)
+def splitter(fold, dataset):
+    dataset.split(fold)
+    dataset.build_full_trainset()
+    print "fold =",fold
 # -----------------------------------------------------------------SPLITTER ENDS
 # TODO 6 [DONE] Generate Recommendations based on User/Item for its nearest neighbours
 
@@ -140,10 +140,11 @@ def item_based_cf(co_pe):
 # ---------------------------------------------------------------------UBCF EVAL TEST
 def ubcf_eval(co_pe):
     kfold = input("Enter number of folds required to Evaluate:")
-    splitter(kfold)
 
     reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
     df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
+
+    splitter(kfold,df)
 
     # SIMILARITY & ALGORITHM DEFINING
     sim_op = {'name': co_pe, 'user_based': True}
@@ -174,7 +175,7 @@ def ibcf_eval(co_pe):
 
 
 def choices(algorithm):
-    print "CHOOSE Relevant option no.\n(1) Predict Rating for User or Movie \n(2) Evaluate performance of Prediction (DO NOT SELECT)\n" \
+    print "CHOOSE Relevant option no.\n(1) Predict Rating for User or Movie \n(2) Evaluate performance of Prediction \n" \
           "(3) Generate Recommendation\n(4) Evaluate Recommendation\n(5) Type 5 to exit \n"
     choice = input("Choice:")
 

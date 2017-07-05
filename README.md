@@ -1,6 +1,13 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 20 | 5th July, Wed
+* Choice options improved
+* New methods created for Evaluation and Recommendation
+* Data Splitting separated from Recommendation methods
+* Precision Recall + K Fold CV on Evaluated Recommendation ISSUE RAISED
+* K Nearest Neighbours for UBCF ISSUE RAISED
+
 ## DAY 19 | 4th July, Tue
 * Tested UBCF & IBCF Modules
 * Fixed bugs
@@ -96,11 +103,11 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, 
  * In the IDE (PyCharm)  the same environment activating is needed, which is successful when on terminal but not in IDE
  * Changes required (In PyCharm IDE):
     * Change the Python interpreter to 2.7
-    > RUN -> Edit Configurations -> Python Interpreter -> 2.7
+    ```> RUN -> Edit Configurations -> Python Interpreter -> 2.7```
     * Add package of GraphLab in PyCharm
-    > FILE -> Settings -> Project:<Project_Name> -> Project Interpreter (2.7) -> GraphLab-create (TA DA! DONE!)
+    ```> FILE -> Settings -> Project:<Project_Name> -> Project Interpreter (2.7) -> GraphLab-create (TA DA! DONE!)```
     * Verify if it's working in IDE (Restart PyCharm): Open Python Console in IDE (Bottom-Left) and Type in
-    * > import graphlab
+    * > ```import graphlab```
     If you get the similar output then it is successfully done
     * > "Backend TkAgg is interactive backend. Turning interactive mode on. This non-commercial license of GraphLab Create for academic use is assigned to YOUR-EMAIL@gmail.com and will expire on 1 Year from today. [INFO] graphlab.cython.cy_server: GraphLab Create v2.1 started. Logging: /tmp/graphlab_server_1495533712.log"
 
