@@ -30,11 +30,15 @@ df_matrix = df.pivot_table(values='Rating', index='UserID', columns='MovieID')
 # df3 = df.groupby(['UserID','MovieID'])['Rating'].mean().unstack()
 print df_matrix
 
-reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1,5))
-df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
-df.split(n_folds=2)
 
+# ----------------------------------------------------------------SPLITTER
+def splitter(fold):
+    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1,5))
+    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
+    df.split(fold)
+# -----------------------------------------------------------------SPLITTER ENDS
 # TODO 6 [DONE] Generate Recommendations based on User/Item for its nearest neighbours
+
 
 # ----------------------------------------------------------------------------UBCF
 def user_based_cf(co_pe):
@@ -44,10 +48,8 @@ def user_based_cf(co_pe):
     sim_op = {'name': co_pe, 'user_based': True}
     algo = KNNBasic(sim_options=sim_op)
 
-    # RESPONSIBLE TO EXECUTE DATA SPLITS Mentioned in STEP 4
-    perf = evaluate(algo, df, measures=['RMSE', 'MAE'])
-    print_perf(perf)
-    print type(perf)
+    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
+    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
 
     # START TRAINING
     trainset = df.build_full_trainset()
@@ -55,6 +57,11 @@ def user_based_cf(co_pe):
     # APPLYING ALGORITHM KNN Basic
     res = algo.train(trainset)
     print "\t\t >>>TRAINED SET<<<<\n\n", res
+    print "ALGORITHM USED", co_pe
+
+    # MARKERS    print "-------------------->3) Choice", choice
+    # MARKERS    print "-------------------->Path", path,"\n
+    print "CF Type:", prnt, "BASED"
 
     # PEEKING PREDICTED VALUES
     search_key = raw_input("Enter User ID:")
@@ -62,6 +69,8 @@ def user_based_cf(co_pe):
     actual_rating = input("Enter actual Rating:")
 
     print algo.predict(str(search_key), item_id, actual_rating)
+# ------------------------------------------------------------------UBCF ENDS
+
 
 # ------------------------------------------------------------------READ ITEM NAMES
 def read_item_names(path):
@@ -79,6 +88,7 @@ def read_item_names(path):
             name_to_rid[line[1]] = line[0]
 
     return rid_to_name, name_to_rid
+# -------------------------------------------------------------------READ ITEM NAMES ENDS
 
 
 # ----------------------------------------------------------------------------IBCF
@@ -89,10 +99,8 @@ def item_based_cf(co_pe):
     sim_op = {'name': co_pe, 'user_based': False}
     algo = KNNBasic(sim_options=sim_op)
 
-    # RESPONSIBLE TO EXECUTE DATA SPLITS MENTIONED IN STEP 4
-    perf = evaluate(algo, df, measures=['RMSE', 'MAE'])
-    print_perf(perf)
-    print type(perf)
+    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
+    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
 
     # START TRAINING
     trainset = df.build_full_trainset()
@@ -103,59 +111,145 @@ def item_based_cf(co_pe):
 
     # Read the mappings raw id <-> movie name
     rid_to_name, name_to_rid = read_item_names(path)
-    print "-------------------->3) Choice", choice
-    print "-------------------->Path", path,"\n PRNT", prnt
+# MARKERS    print "-------------------->3) Choice", choice
+# MARKERS    print "-------------------->Path", path,"\n
+    print "CF Type:", prnt, "BASED"
 
     search_key = raw_input("ID:")
-    print "ALGORITHM USED : ", one
-    toy_story_raw_id = name_to_rid[search_key]
-    print "\t\t RAW ID>>>>>>>",toy_story_raw_id ,"<<<<<<<"
-    toy_story_inner_id = algo.trainset.to_inner_iid(toy_story_raw_id)
-    print "INNER ID >>>>>",toy_story_inner_id
+    print "ALGORITHM USED : ", co_pe
+    raw_id = name_to_rid[search_key]
+    print "\t\t RAW ID>>>>>>>",raw_id ,"<<<<<<<"
+    inner_id = algo.trainset.to_inner_iid(raw_id)
+    print "INNER ID >>>>>",inner_id
     # Retrieve inner ids of the nearest neighbors of Toy Story.
     k=5
-    toy_story_neighbors = algo.get_neighbors(toy_story_inner_id, k=k)
+    neighbors = algo.get_neighbors(inner_id, k=k)
 
     # Convert inner ids of the neighbors into names.
-    toy_story_neighbors = (algo.trainset.to_raw_iid(inner_id)
-                       for inner_id in toy_story_neighbors)
-    toy_story_neighbors = (rid_to_name[rid]
-                       for rid in toy_story_neighbors)
+    neighbors = (algo.trainset.to_raw_iid(inner_id)
+                       for inner_id in neighbors)
+    neighbors = (rid_to_name[rid]
+                       for rid in neighbors)
     print 'The ', k,' nearest neighbors of ', search_key,' are:'
-    for movie in toy_story_neighbors:
+    for movie in neighbors:
         print(movie)
+# ---------------------------------------------------------------------IBCF ENDS
 # METHODS DEFINED PRIOR
 
-# TODO 7 [] Perform K Fold CV on predicted values with Precsion Recall
 
-# The values arrived from
-# t
-# So far
+# ---------------------------------------------------------------------UBCF EVAL TEST
+def ubcf_eval(co_pe):
+    kfold = input("Enter number of folds required to Evaluate:")
+    splitter(kfold)
+
+    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
+    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
+
+    # SIMILARITY & ALGORITHM DEFINING
+    sim_op = {'name': co_pe, 'user_based': True}
+    algo = KNNBasic(sim_options=sim_op)
+
+    # RESPONSIBLE TO EXECUTE DATA SPLITS MENTIONED IN STEP 4
+    perf = evaluate(algo, df, measures=['RMSE', 'MAE'], )
+    return perf
+# ---------------------------------------------------------------------UBCF EVAL TEST ENDS
 
 
-# TODO 5 [DONE] Similarity using KNN basic after applying Pearson & Cosine
-ip = raw_input("Enter the choice of algorithm(1. Cosine/2. Pearson):")
-one = None
+# ---------------------------------------------------------------------IBCF EVAL TEST
+def ibcf_eval(co_pe):
+    kfold = input("Enter number of folds required to Evaluate:")
+    splitter(kfold)
 
-if ip == 1:
-    one = 'cosine'
-else:
-    one = 'pearson'
+    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
+    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
 
-choice = raw_input("Filtering Method: \n1.User based \n2.Item based \n Choice:")
+    # SIMILARITY & ALGORITHM DEFINING
+    sim_op = {'name': co_pe, 'user_based': False}
+    algo = KNNBasic(sim_options=sim_op)
 
-if choice == '1':
-    user_based_cf(one)
-elif choice == '2':
-    item_based_cf(one)
-else:
-    sim_op={}
-    exit(0)
+    # RESPONSIBLE TO EXECUTE DATA SPLITS MENTIONED IN STEP 4
+    perf = evaluate(algo, df, measures=['RMSE', 'MAE'], )
+    return perf
+# ---------------------------------------------------------------------IBCF EVAL TEST ENDS
 
-    #
-    #
-    #    csvfile = 'pred_matrix.csv'
+
+def choices(algorithm):
+    print "CHOOSE Relevant option no.\n(1) Predict Rating for User or Movie \n(2) Evaluate performance of Prediction (DO NOT SELECT)\n" \
+          "(3) Generate Recommendation\n(4) Evaluate Recommendation\n(5) Type 5 to exit \n"
+    choice = input("Choice:")
+
+    if type(choice) == type(0): # -------- Only Integers to be accepted
+        pass
+    else:
+        print "Only positive numbers"
+        exit(0)
+
+    while choice <= 4:   # ------------------------------------------------------- LOOPING CHOICE (PREDICTION MENU)
+        if choice == 1:  # ------------------------------------------------------ (1) PREDICT RATING FOR USER OR MOVIE
+            print "\n\t\tPrediction Menu:\n\t\t1. User Based\n\t\t2. Item Based\n\t\tType 0 to exit\n\t\t"
+            print "\t\tTRIGGERS:\n\t\t Algorithm:",algorithm
+            ch1 = input("Choice:")
+
+            if ch1 == 1:
+                user_based_cf(algorithm)
+            elif ch1 == 2:
+                item_based_cf(algorithm)
+            elif ch1 == 0:
+                choices(algorithm)
+            else:
+                print "Try Choosing appropriate number.\n exiting..."
+                exit(0)
+
+# ----------------------------------------------------------------------------------- LOOPING CHOICE (EVALUATION MENU)
+        elif choice == 2:  # ------------------------------------------------------(2) EVALUATE PERF. OF PREDICTION:
+            print "\n\t\tEvaluation Menu:\n\t\t1. User Based Eval\n\t\t2. Item Based Eval\n\t\tType 0 to exit\n\t\t"
+            print "TRIGGERS:\n Algorithm:", algorithm
+            ch2 = input("Choice:")
+
+            if ch2 == 1:
+                ubcf_eval(algorithm)
+            elif ch2 == 2:
+                ibcf_eval(algorithm)
+            elif ch2 == 0:
+                choices(algorithm)
+            else:
+                print "Try Choosing appropriate number.\n exiting..."
+                exit(0)
+
+        print "choice",choice
+    else:
+        exit(0)
+
+
+#       csvfile = 'pred_matrix.csv'
 #    with open(csvfile, "w") as output:
 #        writer = csv.writer(output,lineterminator='\n')
 #        for val in algo.predict(str(range(1,943)),range(1,1683),1):
 #            writer.writerow([val])
+
+# # EXECUTION STARTS FROM HERE:
+# ---------------------- INITIALIZATION
+
+# TODO 5 [DONE] Similarity using KNN basic after applying Pearson & Cosine
+ip = raw_input("Enter the choice of algorithm(1. Cosine/2. Pearson):")
+one = None
+if ip == '1':
+    one = 'cosine'
+elif ip == '2':
+    one = 'pearson'
+else:
+    one = 'None'
+    print "Please retry with proper option!"
+    exit(0)
+
+    # reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
+    # df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
+
+    #  CHOICES of Algorithm(one), Dataset(df) are taken before hand
+    #  since they will be shared with Evaluation methods as well
+    #  Initializing locally to every method would increase the statements
+
+
+# ---------------------- EXPERIMENTAL
+
+choices(one)
