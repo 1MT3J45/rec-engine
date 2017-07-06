@@ -1,6 +1,16 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 21 | 6th July, Thu
+* Generation of Predicted values
+* Importing into CSV
+* RESOLVED ISSUE #1 - Precision Recall to be performed using Graphlab
+* RESOLVED ISSUE #2 - K Nearest Users in UBCF
+* Recommendation of Movies in process
+* Testing of Changed Modules and Methods
+* Resolved Issues on SurPRISE methods by Maker himslef - Nicolas Hug
+
+
 ## DAY 20 | 5th July, Wed
 * Choice options improved
 * New methods created for Evaluation and Recommendation
