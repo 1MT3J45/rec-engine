@@ -7,20 +7,19 @@ import metrics
 
 headers = ['UserID', 'MovieID', 'Rating', 'TimeStamp']
 
-# TODO 1 [DONE] Loading Dataset
+# LOADING DATA-SET
 df = pd.read_csv('ml-100k/u.data', sep='\t', names=('UserID', 'MovieID', 'Rating', 'TimeStamp'))
 print df.dtypes, '\n', '____________________'
 
 
-# TODO 2 [DONE] Printing only selected columns
+# PRINTING ONLY SPECIFIC COLUMNS
 values = df.values
 print values[:, 0:2]
 
-# TODO 3 [DONE] Simple sorting of values
+# MAKING A MATRIX
 df_sorted_values = df.sort_values(['UserID', 'MovieID'])
 print type(df_sorted_values)
 
-# TODO 4 [DONE] Printing Matrix of Dataset with NaN Values
 print("*___________________*")
 df_matrix = df.pivot_table(values='Rating', index='UserID', columns='MovieID')
 
@@ -38,7 +37,7 @@ def splitter(fold, dataset):
     dataset.build_full_trainset()
     print "fold =",fold
 # -----------------------------------------------------------------SPLITTER ENDS
-# TODO 6 [DONE] Generate Recommendations based on User/Item for its nearest neighbours
+
 
 
 # ----------------------------------------------------------------------------UBCF
@@ -274,7 +273,7 @@ def choices(algorithm):
 # # EXECUTION STARTS FROM HERE:
 # ---------------------- INITIALIZATION
 
-# TODO 5 [DONE] Similarity using KNN basic after applying Pearson & Cosine
+# INITIAL ALGORITHMS SELECTED WILL BE RIGID ONCE SELECTED:
 ip = raw_input("Enter the choice of algorithm(1. Cosine/2. Pearson):")
 one = None
 if ip == '1':
@@ -294,6 +293,6 @@ else:
     #  Initializing locally to every method would increase the statements
 
 
-# ---------------------- EXPERIMENTAL
+# ---------------------- EXPERIMENTAL !
 
 choices(one)
