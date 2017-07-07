@@ -3,7 +3,7 @@ from collections import defaultdict
 import io
 import pandas as pd
 import csv
-import metrics
+import time
 
 result = False  # Used as Flag, Do not invert the value
 headers = ['UserID', 'MovieID', 'Rating', 'TimeStamp']
@@ -34,10 +34,13 @@ print df_matrix
 
 # ----------------------------------------------------------------SPLITTER
 def splitter(fold, dataset):
+    start = time.time()
     dataset.split(fold)
+    end = time.time()
     # dataset.build_full_trainset()
-    print "fold =",fold
+    print "fold =", fold, "Time elapsed =",(end-start)
 # -----------------------------------------------------------------SPLITTER ENDS
+
 
 # ----------------------------------------------------------------------------UBCF
 def user_based_cf(co_pe):
@@ -86,8 +89,87 @@ def user_based_cf(co_pe):
 
 
 # ----------------------------------------- GENERATION OF PREDICTION MATRIX
-def gen_pred_matrix(top_n):
-    csvfile = 'pred_matrix-full1.csv'
+def gen_pred_matrix_ubcf(co_pe):
+
+    # ---------------------------------------------------- UBCF as is
+
+    # INITIALIZE REQUIRED PARAMETERS
+    path = '/home/mister-t/Projects/PycharmProjects/RecommendationSys/ml-100k/u.user'
+    prnt = "USER"
+    sim_op = {'name': co_pe, 'user_based': True}
+    algo = KNNBasic(sim_options=sim_op)
+
+    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
+    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
+
+    # START TRAINING
+    trainset = df.build_full_trainset()
+
+    # APPLYING ALGORITHM KNN Basic
+    algo.train(trainset)
+    print "ALGORITHM USED", co_pe
+
+    # MARKERS    print "-------------------->3) Choice", choice
+    # MARKERS    print "-------------------->Path", path,"\n
+    print "CF Type:", prnt, "BASED"
+
+    testset = trainset.build_anti_testset()
+    predictions = algo.test(testset=testset)
+
+    top_n = get_top_n(predictions, 5)
+    result_u = True
+
+    # ---------------------------------------------------- UBCF as is
+
+    csvfile = 'pred_matrix-full_ubcf.csv'
+    with open(csvfile, "w") as output:
+        writer = csv.writer(output, delimiter=',', lineterminator='\n')
+        writer.writerow(['uid', 'iid', 'rat'])
+        for uid, user_ratings in top_n.items():
+            for (iid, r) in user_ratings:
+                value = uid, iid, r
+                writer.writerow(value)
+
+
+def gen_pred_matrix_ibcf(co_pe):
+    # ---------------------------------------------------- IBCF as is
+
+    # INITIALIZE REQUIRED PARAMETERS
+    path = '/home/mister-t/Projects/PycharmProjects/RecommendationSys/ml-100k/u.item'
+    prnt = "ITEM"
+    sim_op = {'name': co_pe, 'user_based': False}
+    algo = KNNBasic(sim_options=sim_op)
+
+    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
+    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
+
+    # START TRAINING
+    trainset = df.build_full_trainset()
+
+    # APPLYING ALGORITHM KNN Basic
+    res = algo.train(trainset)
+    print "\t\t >>>TRAINED SET<<<<\n\n", res
+
+    # Read the mappings raw id <-> movie name
+    rid_to_name, name_to_rid = read_item_names(path)
+    print "CF Type:", prnt, "BASED"
+    print "Please be Patient while 'pred_matrix-full_ibcf.csv' is being Generated"
+    for i in range(5):
+        print "."
+        time.sleep(0.5)
+    # --------------------------------------------------------- EXPERIMENTAL
+
+    testset = trainset.build_anti_testset()
+    predictions = algo.test(testset=testset)
+
+    top_n = get_top_n(predictions, 5)
+    result_i = True
+
+    # --------------------------------------------------------- EXPERIMENTAL
+
+    # ---------------------------------------------------- IBCF as is
+
+    csvfile = 'pred_matrix-full_ibcf.csv'
     with open(csvfile, "w") as output:
         writer = csv.writer(output, delimiter=',', lineterminator='\n')
         writer.writerow(['uid', 'iid', 'rat'])
@@ -213,7 +295,11 @@ def ubcf_eval(co_pe):
     algo = KNNBasic(sim_options=sim_op)
 
     # RESPONSIBLE TO EXECUTE DATA SPLITS MENTIONED IN STEP 4
+    start = time.time()
     perf = evaluate(algo, df, measures=['RMSE', 'MAE'], )
+    end = time.time()
+    print_perf(perf); print "\nTotal Time elapsed =", (end - start)
+    print "Average time per fold =", (end - start)/kfold, "\n"
     return perf
 # ---------------------------------------------------------------------UBCF EVAL TEST ENDS
 
@@ -232,7 +318,12 @@ def ibcf_eval(co_pe):
     algo = KNNBasic(sim_options=sim_op)
 
     # RESPONSIBLE TO EXECUTE DATA SPLITS MENTIONED IN STEP 4
+    start = time.time()
     perf = evaluate(algo, df, measures=['RMSE', 'MAE'],)
+    end = time.time()
+    print "\nTotal Time elapsed =", (end - start)
+    print "Average time per fold =", (end - start)/kfold, "\n"
+    print_perf(perf)
     return perf
 # ---------------------------------------------------------------------IBCF EVAL TEST ENDS
 
@@ -240,74 +331,58 @@ def ibcf_eval(co_pe):
 def choices(algorithm):
     print "CHOOSE Relevant option no.\n(1) Predict Rating for User or Movie \n(2) Evaluate performance of Prediction" \
           " \n(3) Generate Prediction Matrix\n(4) Evaluate Recommendation\n(5) Type 5 to exit \n"
-    choice = input("Choice:")
+    choice = int(input("Choice:"))
 
-    if type(choice) == type(0): # -------- Only Integers to be accepted
-        pass
+    if choice == 0 or choice > 5: # -------- Only Integers to be accepted
+        print "Try appropriate options!"
     else:
-        print "Only positive numbers"
-        exit(0)
+        while choice <= 4:  # ------------------------------------------------------- LOOPING CHOICE (PREDICTION MENU)
+            if choice == 1:  # ------------------------------------------------------ (1) PREDICT RATING FOR USER OR MOVIE
+                print "\n\t\tPrediction Menu:\n\t\t1. User Based\n\t\t2. Item Based\n\t\tType 0 to exit\n\t\t"
+                print "\t\tTRIGGERS:\n\t\t Algorithm:", algorithm
+                ch1 = input("Choice:")
 
-    while choice <= 4:   # ------------------------------------------------------- LOOPING CHOICE (PREDICTION MENU)
-        if choice == 1:  # ------------------------------------------------------ (1) PREDICT RATING FOR USER OR MOVIE
-            print "\n\t\tPrediction Menu:\n\t\t1. User Based\n\t\t2. Item Based\n\t\tType 0 to exit\n\t\t"
-            print "\t\tTRIGGERS:\n\t\t Algorithm:",algorithm
-            ch1 = input("Choice:")
-
-            if ch1 == 1:
-                user_based_cf(algorithm)
-            elif ch1 == 2:
-                item_based_cf(algorithm)
-            elif ch1 == 0:
-                choices(algorithm)
-            else:
-                print "Try Choosing appropriate number.\n exiting..."
-                exit(0)
+                if ch1 == 1:
+                    user_based_cf(algorithm)
+                elif ch1 == 2:
+                    item_based_cf(algorithm)
+                elif ch1 == 0:
+                    choices(algorithm)
+                else:
+                    print "Try Choosing appropriate number.\n exiting..."
+                    exit(0)
 
 # ----------------------------------------------------------------------------------- LOOPING CHOICE (EVALUATION MENU)
-        elif choice == 2:  # ------------------------------------------------------(2) EVALUATE PERF. OF PREDICTION:
-            print "\n\t\tEvaluation Menu:\n\t\t1. User Based Eval\n\t\t2. Item Based Eval\n\t\tType 0 to exit\n\t\t"
-            print "TRIGGERS:\n Algorithm:", algorithm
-            ch2 = input("Choice:")
+            elif choice == 2:  # ------------------------------------------------------(2) EVALUATE PERF. OF PREDICTION:
+                print "\n\t\tEvaluation Menu:\n\t\t1. User Based Eval\n\t\t2. Item Based Eval\n\t\tType 0 to exit\n\t\t"
+                print "TRIGGERS:\n Algorithm:", algorithm
+                ch2 = input("Choice:")
 
-            if ch2 == 1:
-                ubcf_eval(algorithm)
-            elif ch2 == 2:
-                ibcf_eval(algorithm)
-            elif ch2 == 0:
-                choices(algorithm)
-            else:
-                print "Try Choosing appropriate number.\n exiting..."
-                exit(0)
-
-        elif choice == 3:
-            top_n1, res1 = user_based_cf(algorithm)
-            top_n2, res2 = item_based_cf(algorithm)
-            print "\n\t\t Matrix Generators:\n\t\t 1. UBCF Pred. Matrix\n\t\t 2. IBCF Pred. Matrix\n\t\t3. Type 0 to " \
-                  "Exit\n\t\tNote: Execution of UBCF & IBCF execution is mandatory before generating Resp. Prediction" \
-                  " Matrices"
-            ch3 = input("Ch >")
-
-            if ch3 == 1:
-                if res1 is True:
-                    gen_pred_matrix(top_n1)
+                if ch2 == 1:
+                    ubcf_eval(algorithm)
+                elif ch2 == 2:
+                    ibcf_eval(algorithm)
+                elif ch2 == 0:
+                    choices(algorithm)
                 else:
-                    print "Executing UBCF First -------------------------------------------------------->"
-                    top_n11,res = user_based_cf(algorithm)
-                    print "Please be patient while MATRIX is Generated --------------------------------->"
-                    gen_pred_matrix(top_n11)
-            elif ch3 == 2:
-                if res2 is True:
-                    gen_pred_matrix(top_n2)
+                    print "Try Choosing appropriate number.\n exiting..."
+                    exit(0)
+
+            elif choice == 3:
+                print "\n\t\t Matrix Generators:\n\t\t 1. UBCF Pred. Matrix\n\t\t 2. IBCF Pred. Matrix\n\t\t 3. Type 0 to " \
+                      "Exit\n\t\tNote: Execution of UBCF & IBCF execution is mandatory before generating Resp. Prediction" \
+                      " Matrices"
+                ch3 = input("Ch >")
+
+                if ch3 == 1:
+                    gen_pred_matrix_ubcf(algorithm)
+                elif ch3 == 2:
+                    gen_pred_matrix_ibcf(algorithm)
                 else:
-                    print "Executing UBCF First -------------------------------------------------------->"
-                    top_n22, res = item_based_cf(algorithm)
-                    print "Please be patient while MATRIX is Generated --------------------------------->"
-                    gen_pred_matrix(top_n22)
-            else:
-                choices(algorithm)
-    else:
-        exit(0)
+                    choices(algorithm)
+        else:
+            exit(0)
+
 
 # -------------- RECOMMENDATION & EVALUATION with PRECISION & RECALL-----
 
