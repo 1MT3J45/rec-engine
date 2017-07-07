@@ -401,14 +401,6 @@ else:
     print "Please retry with proper option!"
     exit(0)
 
-    # reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
-    # df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
-
-    #  CHOICES of Algorithm(one), Dataset(df) are taken before hand
-    #  since they will be shared with Evaluation methods as well
-    #  Initializing locally to every method would increase the statements
-
-
 # ---------------------- EXPERIMENTAL !
 
 choices(one)
