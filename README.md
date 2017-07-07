@@ -1,6 +1,17 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 23 | 8th July, Sat
+* Added new Option for Prediction Matrix Generation (Stabilized)
+* Total run time and Average fold time for Evaluation
+* Printing Performance Summary after every evaluation test
+
+## DAY 22 | 7th July, Fri
+* Minute changes as required in
+    * Menu
+    * Splitter
+    * Prediction Matrix generation (Unstable)
+
 ## DAY 21 | 6th July, Thu
 * Generation of Predicted values
 * Importing into CSV
@@ -8,7 +19,7 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, 
 * RESOLVED ISSUE #2 - K Nearest Users in UBCF
 * Recommendation of Movies in process
 * Testing of Changed Modules and Methods
-* Resolved Issues on SurPRISE methods by Maker himslef - Nicolas Hug
+* Resolved Issues on SurPRISE methods by Maker himself - Nicolas Hug
 
 
 ## DAY 20 | 5th July, Wed
