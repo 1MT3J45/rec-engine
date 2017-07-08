@@ -4,6 +4,7 @@ import io
 import pandas as pd
 import csv
 import time
+import numpy as np
 
 result = False  # Used as Flag, Do not invert the value
 headers = ['UserID', 'MovieID', 'Rating', 'TimeStamp']
@@ -117,7 +118,6 @@ def gen_pred_matrix_ubcf(co_pe):
     predictions = algo.test(testset=testset)
 
     top_n = get_top_n(predictions, 5)
-    result_u = True
 
     # ---------------------------------------------------- UBCF as is
 
@@ -129,6 +129,8 @@ def gen_pred_matrix_ubcf(co_pe):
             for (iid, r) in user_ratings:
                 value = uid, iid, r
                 writer.writerow(value)
+
+
 
 
 def gen_pred_matrix_ibcf(co_pe):
@@ -163,7 +165,6 @@ def gen_pred_matrix_ibcf(co_pe):
     predictions = algo.test(testset=testset)
 
     top_n = get_top_n(predictions, 5)
-    result_i = True
 
     # --------------------------------------------------------- EXPERIMENTAL
 
@@ -241,41 +242,27 @@ def item_based_cf(co_pe):
     rid_to_name, name_to_rid = read_item_names(path)
     print "CF Type:", prnt, "BASED"
 
-    search_key = raw_input("ID:")
+    search_key = raw_input("Movie Name:")
     print "ALGORITHM USED : ", co_pe
     raw_id = name_to_rid[search_key]
+
     print "\t\t RAW ID>>>>>>>",raw_id ,"<<<<<<<"
     inner_id = algo.trainset.to_inner_iid(raw_id)
+
     print "INNER ID >>>>>",inner_id
+
     # Retrieve inner ids of the nearest neighbors of Toy Story.
     k = input("Enter size of Neighborhood (Min:1, Max:40)")
     neighbors = algo.get_neighbors(inner_id, k=k)
 
-# --------------------------------------------------------- EXPERIMENTAL
-
-    testset = trainset.build_anti_testset()
-    predictions = algo.test(testset=testset)
-
-    top_n = get_top_n(predictions, 5)
-    result_i = True
-
-    k = input("Enter size of Neighborhood (Min:1, Max:40)")
-
-    inner_id = algo.trainset.to_inner_iid(search_key)
-    neighbors = algo.get_neighbors(inner_id, k=k)
-    print "Nearest Matching users are:"
-    for i in neighbors:
-        print "\t " * 6, i
-# --------------------------------------------------------- EXPERIMENTAL
-    # Convert inner ids of the neighbors into names.
     neighbors = (algo.trainset.to_raw_iid(inner_id)
                        for inner_id in neighbors)
     neighbors = (rid_to_name[rid]
-                       for rid in neighbors)
-    print 'The ', k,' nearest neighbors of ', search_key,' are:'
-    for movie in neighbors:
-        print(movie)
-    return top_n, result_i
+                           for rid in neighbors)
+
+    print "Nearest ", k," Matching Items are:"
+    for i in neighbors:
+        print "\t " * 6,i
 
 # ---------------------------------------------------------------------IBCF ENDS
 # METHODS DEFINED PRIOR
@@ -298,8 +285,12 @@ def ubcf_eval(co_pe):
     start = time.time()
     perf = evaluate(algo, df, measures=['RMSE', 'MAE'], )
     end = time.time()
-    print_perf(perf); print "\nTotal Time elapsed =", (end - start)
+
+    print_perf(perf)
+
+    print "\nTotal Time elapsed =", (end - start)
     print "Average time per fold =", (end - start)/kfold, "\n"
+
     return perf
 # ---------------------------------------------------------------------UBCF EVAL TEST ENDS
 
@@ -321,19 +312,67 @@ def ibcf_eval(co_pe):
     start = time.time()
     perf = evaluate(algo, df, measures=['RMSE', 'MAE'],)
     end = time.time()
+
+    print_perf(perf)
+
     print "\nTotal Time elapsed =", (end - start)
     print "Average time per fold =", (end - start)/kfold, "\n"
-    print_perf(perf)
+
     return perf
 # ---------------------------------------------------------------------IBCF EVAL TEST ENDS
+
+# --------------------------------------------------------------------- RECOMMEND MOVIES
+
+def recommend(id):
+    ds = pd.read_csv("pred_matrix-full_ubcf.csv")
+    confusion_matrix = np.matrix(ds)
+
+    FP = confusion_matrix.sum(axis=0) - np.diag(confusion_matrix)
+    FN = confusion_matrix.sum(axis=1) - np.diag(confusion_matrix)
+    TP = np.diag(confusion_matrix)
+    TN = confusion_matrix.sum() - (FP + FN + TP)
+
+    # Sensitivity, hit rate, recall, or true positive rate
+    TPR = TP / (TP + FN)
+    # Specificity or true negative rate
+    TNR = TN / (TN + FP)
+    # Precision or positive predictive value
+    PPV = TP / (TP + FP)
+    # Negative predictive value
+    NPV = TN / (TN + FN)
+    # Fall out or false positive rate
+    FPR = FP / (FP + TN)
+    # False negative rate
+    FNR = FN / (TP + FN)
+    # False discovery rate
+    FDR = FP / (TP + FP)
+
+    # Overall accuracy
+    ACC = (TP + TN) / (TP + FP + FN + TN)
+
+    print "\nTrue Positive:\n", TP, "\n\nTrue Negative\n", TN, "\n\nFalse Positive\n", FP, "\n\nFalse Negative\n", FN
+    print "-" * 30
+    print "\nTrue Postive Ratio =", TPR, "\n\nFalse Positive Ratio =", FPR
+    print "-" * 30
+
+    print "*"*20
+    print confusion_matrix
+
+    print "Accuracy with current Algorithm is ", ACC.mean(axis=0)
+
+    records = ds.loc[ds['uid']==1]
+    for recom in records:
+        print recom
+
+# --------------------------------------------------------------------- RECOMMEND MOVIES ENDS
 
 
 def choices(algorithm):
     print "CHOOSE Relevant option no.\n(1) Predict Rating for User or Movie \n(2) Evaluate performance of Prediction" \
-          " \n(3) Generate Prediction Matrix\n(4) Evaluate Recommendation\n(5) Type 5 to exit \n"
+          " \n(3) Generate Prediction Matrix\n(4) Get Recommendation\n(5) Type 5 to exit \n"
     choice = int(input("Choice:"))
 
-    if choice == 0 or choice > 5: # -------- Only Integers to be accepted
+    if choice == 0 or choice > 5: # ------------------------------------------------- Only Integers to be accepted
         print "Try appropriate options!"
     else:
         while choice <= 4:  # ------------------------------------------------------- LOOPING CHOICE (PREDICTION MENU)
@@ -380,6 +419,20 @@ def choices(algorithm):
                     gen_pred_matrix_ibcf(algorithm)
                 else:
                     choices(algorithm)
+            elif choice == 4:
+                print "\n\t\t Recommend top n Movies to a Specific user"
+                # TWO OPTIONS TO BE MODIFIED INTO 1> Get Recommendations 2> Evaluate Recommendations
+                print "\n\t\tReady? \n\t\t (1) to start \n\t\t (2) to exit\n\t\t"
+                ch4 = input("Ch >")
+                if ch4 == 1:
+                    uid = int(input("Enter User ID:"))
+                    recommend(uid)
+                elif ch4 == 2:
+                    choices(algorithm)
+                else:
+                    print "SELECT APPROPRIATE OPTIONS!"
+                    choices(algorithm)
+
         else:
             exit(0)
 
@@ -406,6 +459,5 @@ else:
 choices(one)
 
 # TODO 1. Get Recommendations to user & item
-# TODO 2. Get Processing Time for Each Fold
 # TODO 3. Show Precision & Recall; TP, FP, TN, FN with Rations & ROC Curve
 # TODO 4. Export recommendations using method of Generate Prediction Matrix

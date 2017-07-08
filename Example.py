@@ -96,10 +96,8 @@ def item_based_cf(co_pe):
     sim_op = {'name': co_pe, 'user_based': False}
     algo = KNNBasic(sim_options=sim_op)
 
-    # RESPONSIBLE TO EXECUTE DATA SPLITS MENTIONED IN STEP 4
-    perf = evaluate(algo, df, measures=['RMSE', 'MAE'], )
-    print_perf(perf)
-    print type(perf)
+    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
+    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
 
     # START TRAINING
     trainset = df.build_full_trainset()
@@ -110,28 +108,29 @@ def item_based_cf(co_pe):
 
     # Read the mappings raw id <-> movie name
     rid_to_name, name_to_rid = read_item_names(path)
-# MARKERS    print "-------------------->3) Choice", choice
-# MARKERS    print "-------------------->Path", path,"\n
     print "CF Type:", prnt, "BASED"
 
-    search_key = raw_input("ID:")
+    search_key = raw_input("Movie Name:")
     print "ALGORITHM USED : ", co_pe
     raw_id = name_to_rid[search_key]
-    print "\t\t RAW ID>>>>>>>",raw_id ,"<<<<<<<"
+
+    print "\t\t RAW ID>>>>>>>", raw_id, "<<<<<<<"
     inner_id = algo.trainset.to_inner_iid(raw_id)
-    print "INNER ID >>>>>",inner_id
+
+    print "INNER ID >>>>>", inner_id
+
     # Retrieve inner ids of the nearest neighbors of Toy Story.
-    k=5
+    k = input("Enter size of Neighborhood (Min:1, Max:40)")
     neighbors = algo.get_neighbors(inner_id, k=k)
 
-    # Convert inner ids of the neighbors into names.
     neighbors = (algo.trainset.to_raw_iid(inner_id)
-                       for inner_id in neighbors)
+                 for inner_id in neighbors)
     neighbors = (rid_to_name[rid]
-                       for rid in neighbors)
-    print 'The ', k,' nearest neighbors of ', search_key,' are:'
-    for movie in neighbors:
-        print(movie)
+                 for rid in neighbors)
+
+    print "Nearest ", k, " Matching Items are:"
+    for i in neighbors:
+        print "\t " * 6, i
 # METHODS DEFINED PRIOR
 
 # TODO 5 [DONE] Similarity using KNN basic after applying Pearson & Cosine
