@@ -46,7 +46,7 @@ def splitter(fold, dataset):
 # ----------------------------------------------------------------------------UBCF
 def user_based_cf(co_pe):
     # INITIALIZE REQUIRED PARAMETERS
-    path = '/home/mister-t/Projects/PycharmProjects/RecommendationSys/ml-100k/u.user'
+    path = 'ml-100k/u.user'
     prnt = "USER"
     sim_op = {'name': co_pe, 'user_based': True}
     algo = KNNBasic(sim_options=sim_op)
@@ -61,8 +61,14 @@ def user_based_cf(co_pe):
     algo.train(trainset)
     print "ALGORITHM USED", co_pe
 
-    # MARKERS    print "-------------------->3) Choice", choice
-    # MARKERS    print "-------------------->Path", path,"\n
+# --------------------------------------------- MARKERS
+
+    f = io.open("AlgoHist_ub.txt", "wb")
+    f.write(repr(co_pe))
+    f.close()
+
+# --------------------------------------------- MARKERS END
+
     print "CF Type:", prnt, "BASED"
 
     # PEEKING PREDICTED VALUES
@@ -95,7 +101,7 @@ def gen_pred_matrix_ubcf(co_pe):
     # ---------------------------------------------------- UBCF as is
 
     # INITIALIZE REQUIRED PARAMETERS
-    path = '/home/mister-t/Projects/PycharmProjects/RecommendationSys/ml-100k/u.user'
+    path = 'ml-100k/u.user'
     prnt = "USER"
     sim_op = {'name': co_pe, 'user_based': True}
     algo = KNNBasic(sim_options=sim_op)
@@ -110,8 +116,6 @@ def gen_pred_matrix_ubcf(co_pe):
     algo.train(trainset)
     print "ALGORITHM USED", co_pe
 
-    # MARKERS    print "-------------------->3) Choice", choice
-    # MARKERS    print "-------------------->Path", path,"\n
     print "CF Type:", prnt, "BASED"
 
     testset = trainset.build_anti_testset()
@@ -129,7 +133,7 @@ def gen_pred_matrix_ubcf(co_pe):
             for (iid, r) in user_ratings:
                 value = uid, iid, r
                 writer.writerow(value)
-
+    print "Done! You may now check the file in same Dir. as of Program"
 
 
 
@@ -178,19 +182,21 @@ def gen_pred_matrix_ibcf(co_pe):
             for (iid, r) in user_ratings:
                 value = uid, iid, r
                 writer.writerow(value)
+    print "Done! You may now check the file in same Dir. as of Program"
 
 # ----------------------------------------- GENERATION OF PREDICTION MATRIX ENDS
 
 
 def get_top_n(predictions, n=5):
     top_n = defaultdict(list)
+    uid = None
 
     # MAPPING PREDICTIONS TO EACH USER
     for uid, iid, true_r, est, _ in predictions:
         top_n[uid].append((iid,est))
 
     # THEN SORT SORT THE PREDICTIONS FOR EACH USER AND RETRIEVE THE K Highest ones
-    #uid = 0
+    # uid = 0
     for iid, user_ratings in top_n.items():
         user_ratings.sort(key=lambda x: x[1], reverse=True)
         top_n[uid] = user_ratings[:n]
@@ -223,6 +229,7 @@ def read_item_names(path):
 # ----------------------------------------------------------------------------IBCF
 def item_based_cf(co_pe):
     # INITIALIZE REQUIRED PARAMETERS
+    # INITIALIZE REQUIRED PARAMETERS
     path = '/home/mister-t/Projects/PycharmProjects/RecommendationSys/ml-100k/u.item'
     prnt = "ITEM"
     sim_op = {'name': co_pe, 'user_based': False}
@@ -246,23 +253,32 @@ def item_based_cf(co_pe):
     print "ALGORITHM USED : ", co_pe
     raw_id = name_to_rid[search_key]
 
-    print "\t\t RAW ID>>>>>>>",raw_id ,"<<<<<<<"
+    # --------------------------------------------- MARKERS
+
+    f = io.open("AlgoHist_ib.txt", "wb")
+    f.write(repr(co_pe))
+    f.close()
+
+    # --------------------------------------------- MARKERS END
+
+    print "\t\t RAW ID>>>>>>>", raw_id, "<<<<<<<"
     inner_id = algo.trainset.to_inner_iid(raw_id)
 
-    print "INNER ID >>>>>",inner_id
+    print "INNER ID >>>>>", inner_id
 
     # Retrieve inner ids of the nearest neighbors of Toy Story.
     k = input("Enter size of Neighborhood (Min:1, Max:40)")
     neighbors = algo.get_neighbors(inner_id, k=k)
 
     neighbors = (algo.trainset.to_raw_iid(inner_id)
-                       for inner_id in neighbors)
+                 for inner_id in neighbors)
     neighbors = (rid_to_name[rid]
-                           for rid in neighbors)
+                 for rid in neighbors)
 
-    print "Nearest ", k," Matching Items are:"
+    print "Nearest ", k, " Matching Items are:"
     for i in neighbors:
-        print "\t " * 6,i
+        print "\t " * 6, i
+
 
 # ---------------------------------------------------------------------IBCF ENDS
 # METHODS DEFINED PRIOR
@@ -291,39 +307,8 @@ def ubcf_eval(co_pe):
     print "\nTotal Time elapsed =", (end - start)
     print "Average time per fold =", (end - start)/kfold, "\n"
 
-    return perf
-# ---------------------------------------------------------------------UBCF EVAL TEST ENDS
+    print perf
 
-
-# ---------------------------------------------------------------------IBCF EVAL TEST
-def ibcf_eval(co_pe):
-    kfold = input("Enter number of folds required to Evaluate:")
-
-    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
-    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
-
-    splitter(kfold,df)
-
-    # SIMILARITY & ALGORITHM DEFINING
-    sim_op = {'name': co_pe, 'user_based': False}
-    algo = KNNBasic(sim_options=sim_op)
-
-    # RESPONSIBLE TO EXECUTE DATA SPLITS MENTIONED IN STEP 4
-    start = time.time()
-    perf = evaluate(algo, df, measures=['RMSE', 'MAE'],)
-    end = time.time()
-
-    print_perf(perf)
-
-    print "\nTotal Time elapsed =", (end - start)
-    print "Average time per fold =", (end - start)/kfold, "\n"
-
-    return perf
-# ---------------------------------------------------------------------IBCF EVAL TEST ENDS
-
-# --------------------------------------------------------------------- RECOMMEND MOVIES
-
-def recommend(id):
     ds = pd.read_csv("pred_matrix-full_ubcf.csv")
     confusion_matrix = np.matrix(ds)
 
@@ -355,14 +340,79 @@ def recommend(id):
     print "\nTrue Postive Ratio =", TPR, "\n\nFalse Positive Ratio =", FPR
     print "-" * 30
 
-    print "*"*20
+    print "*" * 20
     print confusion_matrix
 
-    print "Accuracy with current Algorithm is ", ACC.mean(axis=0)
+    print "Accuracy with current Algorithm", algo, "is ", ACC.mean(axis=0)
 
-    records = ds.loc[ds['uid']==1]
-    for recom in records:
-        print recom
+
+# ---------------------------------------------------------------------UBCF EVAL TEST ENDS
+
+
+# ---------------------------------------------------------------------IBCF EVAL TEST
+def ibcf_eval(co_pe):
+    kfold = input("Enter number of folds required to Evaluate:")
+
+    reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
+    df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
+
+    splitter(kfold,df)
+
+    # SIMILARITY & ALGORITHM DEFINING
+    sim_op = {'name': co_pe, 'user_based': False}
+    algo = KNNBasic(sim_options=sim_op)
+
+    # RESPONSIBLE TO EXECUTE DATA SPLITS MENTIONED IN STEP 4
+    start = time.time()
+    perf = evaluate(algo, df, measures=['RMSE', 'MAE'],)
+    end = time.time()
+
+    print_perf(perf)
+
+    print "\nTotal Time elapsed =", (end - start)
+    print "Average time per fold =", (end - start)/kfold, "\n"
+
+    return perf
+# ---------------------------------------------------------------------IBCF EVAL TEST ENDS
+
+
+# --------------------------------------------------------------------- RECOMMEND MOVIES
+def recommend(query,algo):
+
+    print "\n\t\t\t Please select the MODE of Recommendation \n\t\t\t(1) UBCF Recommendations " \
+          "\n\t\t\t(2) IBCF Recommendations \n\t\t\t (0) To exit to Main Menu"
+
+    df, hist = None, None
+
+    ch = int(input("Ch >"))
+    if ch is 1:
+        df = pd.read_csv("pred_matrix-full_ubcf.csv")
+        hist = io.open("AlgoHist_ub.txt","r")
+    elif ch is 2:
+        df = pd.read_csv("pred_matrix-full_ibcf.csv")
+        hist = io.open("AlgoHist_ib.txt","r")
+    elif ch is 0:
+        df = None
+        hist = None
+        choices(algo)
+
+    query = int(query)
+    samsize = int(input("Enter the sample size:"))
+    print ("NOTE: This process will take time to execute. Pls. be Patient \n")
+
+    start = time.time()
+
+    records = df[df['uid'] == query].head(samsize)
+    df_movies = pd.read_csv('ml-100k/u.item', sep='|') # DF3 Items| ID | MOVIE NAME (YEAR)| REL.DATE | NULL | IMDB LINK|
+    records['iid'] = records['iid'].replace(df_movies.set_index('ID')['MOVIE NAME (YEAR)'])
+
+    print records
+    end = time.time()
+    print "-"*15, "SUMMARY", "-"*15
+    print "Total Time taken\t\t\t", (end - start)/60
+    print "Total Records traversed\t\t", df.shape
+    print "Algorithm used:\t\t\t\t", hist.read()
+    hist.close()
 
 # --------------------------------------------------------------------- RECOMMEND MOVIES ENDS
 
@@ -408,9 +458,9 @@ def choices(algorithm):
                     exit(0)
 
             elif choice == 3:
-                print "\n\t\t Matrix Generators:\n\t\t 1. UBCF Pred. Matrix\n\t\t 2. IBCF Pred. Matrix\n\t\t 3. Type 0 to " \
-                      "Exit\n\t\tNote: Execution of UBCF & IBCF execution is mandatory before generating Resp. Prediction" \
-                      " Matrices"
+                print "\n\t\t Matrix Generators:\n\t\t 1. UBCF Pred. Matrix\n\t\t 2. IBCF Pred. Matrix\n\t\t 3. " \
+                      "Type 0 to Exit\n\t\tNote: Execution of UBCF & IBCF execution is mandatory before generating " \
+                      "Resp. Prediction Matrices"
                 ch3 = input("Ch >")
 
                 if ch3 == 1:
@@ -419,14 +469,15 @@ def choices(algorithm):
                     gen_pred_matrix_ibcf(algorithm)
                 else:
                     choices(algorithm)
+
             elif choice == 4:
                 print "\n\t\t Recommend top n Movies to a Specific user"
                 # TWO OPTIONS TO BE MODIFIED INTO 1> Get Recommendations 2> Evaluate Recommendations
                 print "\n\t\tReady? \n\t\t (1) to start \n\t\t (2) to exit\n\t\t"
                 ch4 = input("Ch >")
                 if ch4 == 1:
-                    uid = int(input("Enter User ID:"))
-                    recommend(uid)
+                    uid = raw_input("Enter User ID:")
+                    recommend(uid,algorithm)
                 elif ch4 == 2:
                     choices(algorithm)
                 else:
