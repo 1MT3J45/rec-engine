@@ -1,6 +1,19 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 24 | 10th July, Mon
+* Recommendations for IBCF and UBCF are now available
+* IBCF bugs removed since last rollback
+* Added Authentic Summary using File Handling
+* Memory &amp; Time consumption improvements w.r.t. Recommendations
+* Tested entire flow of Code (without Exceptions)
+* **COMMITING PHASE 1** of Project
+    * PHASE I
+        * Predictions for UBCF & IBCF
+        * Evaluation of Predictions
+        * Prediction Matrix Generation
+        * Recommendation
+
 ## DAY 23 | 8th July, Sat
 * Added new Option for Prediction Matrix Generation (Stabilized)
 * Total run time and Average fold time for Evaluation
