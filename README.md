@@ -1,6 +1,12 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 25 | 12th July, Wed
+* Menu Optimization
+* New Option added for Precision, Recall & F1 Measure
+* Recsys is used (CRAB is no longer supported & was built using Recsys, Plotlib +1)
+* NOTE: Changes are committed in Example.py for **Testing** &amp; **Feedback**
+
 ## DAY 24 | 10th July, Mon
 * Recommendations for IBCF and UBCF are now available
 * IBCF bugs removed since last rollback
