@@ -4,7 +4,7 @@ import io
 import pandas as pd
 import csv
 from recsys.evaluation.decision import PrecisionRecallF1
-import time
+import time, cocomo
 import numpy as np
 
 result = False  # Used as Flag, Do not invert the value
@@ -512,7 +512,7 @@ def choices(algorithm):
             elif choice == 6:
                 exit(0)
         else:
-            exit(0)
+            pass
 
 
 # -------------- RECOMMENDATION & EVALUATION with PRECISION & RECALL-----
@@ -534,7 +534,10 @@ else:
 
 # ---------------------- EXPERIMENTAL !
 
-choices(one)
+try: choices(one)
+
+except:
+    print "Aye! Looks like you Landed wrong! :) Don't Party Late Night Buddy! \n"
 
 # TODO 1. Get Recommendations to user & item
 # TODO 3. Show Precision & Recall; TP, FP, TN, FN with Rations & ROC Curve

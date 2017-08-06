@@ -3,7 +3,8 @@ from collections import defaultdict
 import io
 import pandas as pd
 import csv
-import time
+from recsys.evaluation.decision import PrecisionRecallF1
+import time, cocomo
 import numpy as np
 
 result = False  # Used as Flag, Do not invert the value
@@ -417,15 +418,37 @@ def recommend(query,algo):
 # --------------------------------------------------------------------- RECOMMEND MOVIES ENDS
 
 
+def pre_rec_graph(dataset,algo):
+    print "-" *15, "GRAPH GEN W/ PRECISION RECALL", "-"*15
+    df1 = pd.read_csv("pred_matrix-full_ubcf.csv", sep=",")
+    df2 = pd.read_csv("pred_matrix-full_ibcf.csv", sep=",")
+
+    ub_pred = list(df1.ix[::,'rat'])
+    ib_pred = list(df2.ix[::,'rat'])
+    ds_prev = list(dataset.ix[::,'Rating'])
+
+    decision = PrecisionRecallF1()
+    decision.load(ground_truth=ub_pred,test=ib_pred)
+    result = decision.compute()
+    print "PRF1 w.r.t. IBCF to UBCF Pred Matrix\nRECALL:",result[0],"\nPRECISION:",result[1],"\nF1:",result[2],"\n"
+
+    decision.load(ground_truth=ds_prev, test=ib_pred)
+    result = decision.compute()
+    print "PRF1 w.r.t. IBCF Pred Matrix to U.DATA \nRECALL:", result[0], "\nPRECISION:", result[1], "\nF1:", result[2]
+    print "\n"
+
+
 def choices(algorithm):
     print "CHOOSE Relevant option no.\n(1) Predict Rating for User or Movie \n(2) Evaluate performance of Prediction" \
-          " \n(3) Generate Prediction Matrix\n(4) Get Recommendation\n(5) Type 5 to exit \n"
+          " \n(3) Generate Prediction Matrix\n(4) Get Recommendation\n(5) Precision & Recall \n(6) Press 6 to exit\n"
     choice = int(input("Choice:"))
 
-    if choice == 0 or choice > 5: # ------------------------------------------------- Only Integers to be accepted
+    menu_length = 6  # Increment by the number of options you add in Menu (inclusive of Exit)
+
+    if choice == 0: # ------------------------------------------------- Only Integers to be accepted
         print "Try appropriate options!"
     else:
-        while choice <= 4:  # ------------------------------------------------------- LOOPING CHOICE (PREDICTION MENU)
+        while choice <= menu_length:  # ------------------------------------------------------- LOOPING CHOICE (PREDICTION MENU)
             if choice == 1:  # ------------------------------------------------------ (1) PREDICT RATING FOR USER OR MOVIE
                 print "\n\t\tPrediction Menu:\n\t\t1. User Based\n\t\t2. Item Based\n\t\tType 0 to exit\n\t\t"
                 print "\t\tTRIGGERS:\n\t\t Algorithm:", algorithm
@@ -483,9 +506,13 @@ def choices(algorithm):
                 else:
                     print "SELECT APPROPRIATE OPTIONS!"
                     choices(algorithm)
-
+            elif choice == 5:
+                pre_rec_graph(df, algorithm)
+                choices(algorithm)
+            elif choice == 6:
+                exit(0)
         else:
-            exit(0)
+            pass
 
 
 # -------------- RECOMMENDATION & EVALUATION with PRECISION & RECALL-----
@@ -507,8 +534,7 @@ else:
 
 # ---------------------- EXPERIMENTAL !
 
-choices(one)
+try: choices(one)
 
-# TODO 1. Get Recommendations to user & item
-# TODO 3. Show Precision & Recall; TP, FP, TN, FN with Rations & ROC Curve
-# TODO 4. Export recommendations using method of Generate Prediction Matrix
+except:
+    print "Aye! Looks like you Landed wrong! :) Don't Party Late Night Buddy! \n"
