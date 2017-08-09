@@ -1,6 +1,16 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 27 | 9th August, Wed
+* Merging of u.data and prediction Matrix possible now
+* Creation of Main DataFrames and CSVs
+* Removal of Duplicates from DataFrames
+* Code ready for KMeans Clustering with Graph Generation
+* **ISSUE Unhandled** Mixed Data Type issue, Clustering withheld
+
+## DAY 26 | 5th August, Sat
+* Exception handling performed on Phase I completion
+
 ## DAY 25 | 12th July, Wed
 * Menu Optimization
 * New Option added for Precision, Recall & F1 Measure
@@ -13,7 +23,7 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, 
 * Added Authentic Summary using File Handling
 * Memory &amp; Time consumption improvements w.r.t. Recommendations
 * Tested entire flow of Code (without Exceptions)
-* **COMMITING PHASE 1** of Project
+* **COMMITTING PHASE 1** of Project
     * PHASE I
         * Predictions for UBCF & IBCF
         * Evaluation of Predictions
