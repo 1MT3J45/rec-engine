@@ -4,7 +4,7 @@ import io
 import pandas as pd
 import csv
 from recsys.evaluation.decision import PrecisionRecallF1
-import time, cocomo
+import time
 import numpy as np
 
 result = False  # Used as Flag, Do not invert the value
@@ -26,7 +26,7 @@ print type(df_sorted_values)
 print("*___________________*")
 df_matrix = df.pivot_table(values='Rating', index='UserID', columns='MovieID')
 df_matrix.to_csv("Basic_matrix.csv", sep="\t")
-# FOLL STATEMENTS PRODUCE THE SAME RESULT
+# FOLLOWING STATEMENTS PRODUCE THE SAME RESULT
 
 # df3 = df.set_index(['UserID','MovieID'])['Rating'].unstack()
 # df3 = df.pivot(index='UserID',columns='MovieID',values='Rating')
@@ -40,14 +40,14 @@ def splitter(fold, dataset):
     dataset.split(fold)
     end = time.time()
     # dataset.build_full_trainset()
-    print "fold =", fold, "Time elapsed =",(end-start)
+    print "fold =", fold, "Time elapsed =", (end-start)
 # -----------------------------------------------------------------SPLITTER ENDS
 
 
 # ----------------------------------------------------------------------------UBCF
 def user_based_cf(co_pe):
     # INITIALIZE REQUIRED PARAMETERS
-    path = 'ml-100k/u.user'
+    # path = 'ml-100k/u.user'
     prnt = "USER"
     sim_op = {'name': co_pe, 'user_based': True}
     algo = KNNBasic(sim_options=sim_op)
@@ -82,7 +82,7 @@ def user_based_cf(co_pe):
     testset = trainset.build_anti_testset()
     predictions = algo.test(testset=testset)
 
-    top_n = get_top_n(predictions,5)
+    top_n = get_top_n(predictions, 5)
     result_u = True
 
     k = input("Enter size of Neighborhood (Min:1, Max:40)")
@@ -91,7 +91,7 @@ def user_based_cf(co_pe):
     neighbors = algo.get_neighbors(inner_id, k=k)
     print "Nearest Matching users are:"
     for i in neighbors:
-        print "\t "*6,i
+        print "\t "*6, i
     return top_n, result_u
 # --------------------------------------------------------- RECOMMENDING MOVIES TO SPECIFIC USER
 
@@ -102,7 +102,7 @@ def gen_pred_matrix_ubcf(co_pe):
     # ---------------------------------------------------- UBCF as is
 
     # INITIALIZE REQUIRED PARAMETERS
-    path = 'ml-100k/u.user'
+    # path = 'ml-100k/u.user'
     prnt = "USER"
     sim_op = {'name': co_pe, 'user_based': True}
     algo = KNNBasic(sim_options=sim_op)
@@ -137,7 +137,6 @@ def gen_pred_matrix_ubcf(co_pe):
     print "Done! You may now check the file in same Dir. as of Program"
 
 
-
 def gen_pred_matrix_ibcf(co_pe):
     # ---------------------------------------------------- IBCF as is
 
@@ -158,7 +157,7 @@ def gen_pred_matrix_ibcf(co_pe):
     print "\t\t >>>TRAINED SET<<<<\n\n", res
 
     # Read the mappings raw id <-> movie name
-    rid_to_name, name_to_rid = read_item_names(path)
+    # rid_to_name, name_to_rid = read_item_names(path)
     print "CF Type:", prnt, "BASED"
     print "Please be Patient while 'pred_matrix-full_ibcf.csv' is being Generated"
     for i in range(5):
@@ -194,7 +193,7 @@ def get_top_n(predictions, n=5):
 
     # MAPPING PREDICTIONS TO EACH USER
     for uid, iid, true_r, est, _ in predictions:
-        top_n[uid].append((iid,est))
+        top_n[uid].append((iid, est))
 
     # THEN SORT SORT THE PREDICTIONS FOR EACH USER AND RETRIEVE THE K Highest ones
     # uid = 0
@@ -214,7 +213,7 @@ def read_item_names(path):
     """Read the u.item file from MovieLens 100-k dataset and return two
     mappings to convert raw ids into movie names and movie names into raw ids."""
 
-    file_name = (path)
+    file_name = path
     rid_to_name = {}
     name_to_rid = {}
     with io.open(file_name, 'r', encoding='ISO-8859-1') as f:
@@ -292,7 +291,7 @@ def ubcf_eval(co_pe):
     reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
     df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
 
-    splitter(kfold,df)
+    splitter(kfold, df)
 
     # SIMILARITY & ALGORITHM DEFINING
     sim_op = {'name': co_pe, 'user_based': True}
@@ -300,7 +299,7 @@ def ubcf_eval(co_pe):
 
     # RESPONSIBLE TO EXECUTE DATA SPLITS MENTIONED IN STEP 4
     start = time.time()
-    perf = evaluate(algo, df, measures=['RMSE', 'MAE'], )
+    perf = evaluate(algo, df, measures=['RMSE', 'MAE'])
     end = time.time()
 
     print_perf(perf)
@@ -357,7 +356,7 @@ def ibcf_eval(co_pe):
     reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
     df = Dataset.load_from_file('ml-100k/u.data', reader=reader)
 
-    splitter(kfold,df)
+    splitter(kfold, df)
 
     # SIMILARITY & ALGORITHM DEFINING
     sim_op = {'name': co_pe, 'user_based': False}
@@ -378,7 +377,7 @@ def ibcf_eval(co_pe):
 
 
 # --------------------------------------------------------------------- RECOMMEND MOVIES
-def recommend(query,algo):
+def recommend(query, algo):
 
     print "\n\t\t\t Please select the MODE of Recommendation \n\t\t\t(1) UBCF Recommendations " \
           "\n\t\t\t(2) IBCF Recommendations \n\t\t\t (0) To exit to Main Menu"
@@ -388,10 +387,10 @@ def recommend(query,algo):
     ch = int(input("Ch >"))
     if ch is 1:
         df = pd.read_csv("pred_matrix-full_ubcf.csv")
-        hist = io.open("AlgoHist_ub.txt","r")
+        hist = io.open("AlgoHist_ub.txt", "r")
     elif ch is 2:
         df = pd.read_csv("pred_matrix-full_ibcf.csv")
-        hist = io.open("AlgoHist_ib.txt","r")
+        hist = io.open("AlgoHist_ib.txt", "r")
     elif ch is 0:
         df = None
         hist = None
@@ -404,7 +403,7 @@ def recommend(query,algo):
     start = time.time()
 
     records = df[df['uid'] == query].head(samsize)
-    df_movies = pd.read_csv('ml-100k/u.item', sep='|') # DF3 Items| ID | MOVIE NAME (YEAR)| REL.DATE | NULL | IMDB LINK|
+    df_movies = pd.read_csv('ml-100k/u.item', sep='|')  # DF3 Items| ID | MOVIE NAME (YEAR)| REL.DATE | NULL | IMDB LINK|
     records['iid'] = records['iid'].replace(df_movies.set_index('ID')['MOVIE NAME (YEAR)'])
 
     print records
@@ -418,19 +417,19 @@ def recommend(query,algo):
 # --------------------------------------------------------------------- RECOMMEND MOVIES ENDS
 
 
-def pre_rec_graph(dataset,algo):
-    print "-" *15, "GRAPH GEN W/ PRECISION RECALL", "-"*15
+def pre_rec_graph(dataset):
+    print "-" * 15, "GRAPH GEN W/ PRECISION RECALL", "-"*15
     df1 = pd.read_csv("pred_matrix-full_ubcf.csv", sep=",")
     df2 = pd.read_csv("pred_matrix-full_ibcf.csv", sep=",")
 
-    ub_pred = list(df1.ix[::,'rat'])
-    ib_pred = list(df2.ix[::,'rat'])
-    ds_prev = list(dataset.ix[::,'Rating'])
+    ub_pred = list(df1.ix[::, 'rat'])
+    ib_pred = list(df2.ix[::, 'rat'])
+    ds_prev = list(dataset.ix[::, 'Rating'])
 
     decision = PrecisionRecallF1()
-    decision.load(ground_truth=ub_pred,test=ib_pred)
+    decision.load(ground_truth=ub_pred, test=ib_pred)
     result = decision.compute()
-    print "PRF1 w.r.t. IBCF to UBCF Pred Matrix\nRECALL:",result[0],"\nPRECISION:",result[1],"\nF1:",result[2],"\n"
+    print "PRF1 w.r.t. IBCF to UBCF Pred Matrix\nRECALL:", result[0], "\nPRECISION:", result[1], "\nF1:", result[2], "\n"
 
     decision.load(ground_truth=ds_prev, test=ib_pred)
     result = decision.compute()
@@ -445,11 +444,11 @@ def choices(algorithm):
 
     menu_length = 6  # Increment by the number of options you add in Menu (inclusive of Exit)
 
-    if choice == 0: # ------------------------------------------------- Only Integers to be accepted
+    if choice == 0:  # ------------------------------------------------- Only Integers to be accepted
         print "Try appropriate options!"
     else:
-        while choice <= menu_length:  # ------------------------------------------------------- LOOPING CHOICE (PREDICTION MENU)
-            if choice == 1:  # ------------------------------------------------------ (1) PREDICT RATING FOR USER OR MOVIE
+        while choice <= menu_length:  # ---------------------------------------------- LOOPING CHOICE (PREDICTION MENU)
+            if choice == 1:  # --------------------------------------------------- (1) PREDICT RATING FOR USER OR MOVIE
                 print "\n\t\tPrediction Menu:\n\t\t1. User Based\n\t\t2. Item Based\n\t\tType 0 to exit\n\t\t"
                 print "\t\tTRIGGERS:\n\t\t Algorithm:", algorithm
                 ch1 = input("Choice:")
@@ -500,16 +499,17 @@ def choices(algorithm):
                 ch4 = input("Ch >")
                 if ch4 == 1:
                     uid = raw_input("Enter User ID:")
-                    recommend(uid,algorithm)
+                    recommend(uid, algorithm)
                 elif ch4 == 2:
                     choices(algorithm)
                 else:
                     print "SELECT APPROPRIATE OPTIONS!"
                     choices(algorithm)
             elif choice == 5:
-                pre_rec_graph(df, algorithm)
+                pre_rec_graph(df)
                 choices(algorithm)
             elif choice == 6:
+                print "Exiting..."
                 exit(0)
         else:
             pass
@@ -534,7 +534,8 @@ else:
 
 # ---------------------- EXPERIMENTAL !
 
-try: choices(one)
+try:
+    choices(one)
 
 except:
-    print "Aye! Looks like you Landed wrong! :) Don't Party Late Night Buddy! \n"
+    print "Exit Exception: Bye"
