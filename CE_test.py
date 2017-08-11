@@ -11,7 +11,10 @@ print "\t\tFind the RecEngine.py in same directory."
 # ------------------------------------------ Conversion of Data Frames into files
 columns = ['uid', 'iid', 'rat']
 
-choice = int(input("\n\t\tMERGE FRAMES\n\t\t1) IBCF + U.DATA\n\t\t2) UBCF + U.DATA\n\t\tEnter your Choice:"))
+#choice = int(input("\n\t\tMERGE FRAMES\n\t\t1) IBCF + U.DATA\n\t\t2) UBCF + U.DATA\n\t\tEnter your Choice:"))
+choice = 1
+print "Choice set to Default = 1 [Calls IBCF]"
+
 if choice is 1:
     pred_matrix = pd.read_csv("pred_matrix-full_ibcf.csv", sep=',')
 elif choice is 2:
@@ -36,11 +39,10 @@ handle.close()
 
 AllData = pd.read_csv("AllData.csv", low_memory=False)
 print AllData.shape
-# UBCF SHAPE (9506837, 3)
-# IBCF SHAPE (1584472, 3)
+
 
 # ----------------------------------------- BUILD MAIN MATRIX
-#AD_Matrix = AllData.pivot(values='rat',index='uid',columns='iid')
+# AD_Matrix = AllData.pivot(values='rat',index='uid',columns='iid')
 AD_Matrix = AllData.drop_duplicates(subset=['uid','iid'])
 Pivot_Matrix = AD_Matrix.pivot(values='rat',index='uid',columns='iid')
 
@@ -68,6 +70,9 @@ values = df.values
 X = values[:, 1:2]
 Y = values[:, 2:3]
 
+print df.iloc(128)
+
+'''
 X_values = np.array([[242, 3],[302, 3],
                      [377, 1],[51, 2],
                      [346, 1],[474, 4],
@@ -105,4 +110,4 @@ plt.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2], marker='x', s=150
 plt.show()
 
 # TODO -------------- STAGE 4 Export Clustering
-# NULL
+# NULL'''

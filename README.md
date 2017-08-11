@@ -1,6 +1,16 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 29 | 11th August, Fri
+* Representation acquired in array format
+* NDArray format failed
+* Manual Data Input results in **successful** display of Clusters and Centroids
+* New TEST File now available as CE_test.py
+
+## DAY 28 | 10th August, Thu
+* Mixed data Issue resolved
+* Data frame values unable to fetch in Array
+
 ## DAY 27 | 9th August, Wed
 * Merging of u.data and prediction Matrix possible now
 * Creation of Main DataFrames and CSVs
