@@ -11,7 +11,7 @@ print "\t\tFind the RecEngine.py in same directory."
 # ------------------------------------------ Conversion of Data Frames into files
 columns = ['uid', 'iid', 'rat']
 
-# choice = int(input("\n\t\tMERGE FRAMES\n\t\t1) IBCF + U.DATA\n\t\t2) UBCF + U.DATA\n\t\tEnter your Choice:"))
+choice = int(input("\n\t\tMERGE FRAMES\n\t\t1) IBCF + U.DATA\n\t\t2) UBCF + U.DATA\n\t\tEnter your Choice:"))
 choice = 1
 print "Choice set to Default = 1 [Calls IBCF]"
 
