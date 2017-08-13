@@ -11,7 +11,7 @@ print "\t\tFind the RecEngine.py in same directory."
 # ------------------------------------------ Conversion of Data Frames into files
 columns = ['uid', 'iid', 'rat']
 
-#choice = int(input("\n\t\tMERGE FRAMES\n\t\t1) IBCF + U.DATA\n\t\t2) UBCF + U.DATA\n\t\tEnter your Choice:"))
+# choice = int(input("\n\t\tMERGE FRAMES\n\t\t1) IBCF + U.DATA\n\t\t2) UBCF + U.DATA\n\t\tEnter your Choice:"))
 choice = 1
 print "Choice set to Default = 1 [Calls IBCF]"
 
@@ -42,56 +42,35 @@ print AllData.shape
 
 
 # ----------------------------------------- BUILD MAIN MATRIX
-# AD_Matrix = AllData.pivot(values='rat',index='uid',columns='iid')
 AD_Matrix = AllData.drop_duplicates(subset=['uid','iid'])
 Pivot_Matrix = AD_Matrix.pivot(values='rat',index='uid',columns='iid')
 
-if choice is 1:
-    Pivot_Matrix.to_csv("MainMatrix_IBCF.csv")
-elif choice is 2:
-    Pivot_Matrix.to_csv("MainMatrix_UBCF.csv")
+#if choice is 1:
+#    Pivot_Matrix.to_csv("MainMatrix_IBCF.csv")
+#elif choice is 2:
+#    Pivot_Matrix.to_csv("MainMatrix_UBCF.csv")
 # AD_Matrix.reset_index().pivot(values=3, index=[0, 1], columns=2, aggfunc='mean')
 
 # TODO ----------------- STAGE 2 Prep-ing data for Clustering
 
-df = pd.read_csv("AllData.csv")
+records = int(input("Enter the no. of Records to be Fetched:"))
+df = pd.read_csv("AllData.csv", usecols=['iid','rat'], nrows=records)
 
 print "UDATA -------------\n", udata_df.dtypes
 print "PRED_MATRIX -------\n", pred_matrix.dtypes
 print "AllDATA -----------\n", AllData.dtypes
+# a = raw_input("awaiting to clean records from AllData.csv! Go ahead.")
+X = df.values
 # Data type must of Same type, not Mixed type TO BE RESOLVED
 
 # TODO ----------------- STAGE 3 KMeans Clustering
 
-np_df = np.genfromtxt('AllData.csv', delimiter=',', unpack=True)
-
-values = df.values
-
-X = values[:, 1:2]
-Y = values[:, 2:3]
-
-print df.iloc(128)
-
-'''
-X_values = np.array([[242, 3],[302, 3],
-                     [377, 1],[51, 2],
-                     [346, 1],[474, 4],
-                     [265, 2],[465, 5],
-                     [451, 3],[86, 3],
-                     [257, 2],[1014, 5],
-                     [222, 5]])
-Y_values = np.array(Y)
-
-someArray = df[['uid','iid','rat']].values
+# someArray = df[['uid','iid','rat']].values
 # df.loc[:, ['iid','rat']].values
 # print "PRINTING X Data \n",X
 # print "PRINTING Y Data \n",Y
-print type(X_values)
-ch = input("Wait for input ->")
-print df
-print "Array HERE \n",someArray
 
-kmeans = KMeans(n_clusters=3).fit(X_values)
+kmeans = KMeans(n_clusters=3).fit(X)
 # KMeans.fit(X)
 
 centroids = kmeans.cluster_centers_
@@ -100,14 +79,20 @@ label = kmeans.labels_
 print "CENTROIDS :", centroids
 print "LABEL :",label
 
-colors = {"g.", "r.", "b."}
+colors = np.random.rand(50)# {"g", "r", "b"}
 
-for i in range(len(X_values)):
-    print "Coordinate", X_values[i], "label:", label[i]
-    plt.plot(X_values[i][0], X_values[i][1], markersize = 10)
+for i in range(len(X)):
+    print "\nCoordinate", X[i], "\nlabel:", label[i]
+    plt.plot(X[i][0], X[i][1], markersize = 100)
 
-plt.scatter(centroids[:, 0], centroids[:, 1], centroids[:, 2], marker='x', s=150, linewidths= 5, zorder = 10)
+plt.scatter(centroids[:, 0], centroids[:, 1], marker='x', s=150, linewidths= 5, zorder = 10)
+print "CO-ORDINATES for Centroids:\n", "1st Centroid", centroids[[0]], "\n2nd Centroid", centroids[[1]], \
+    "\n3rd Centroid",centroids[[2]]
 plt.show()
 
-# TODO -------------- STAGE 4 Export Clustering
+# TODO -------------- STAGE 4 Predict Cluster for new Data
+iid = int(input("Enter Item ID:"))
+rat = float(input("Enter Rating:"))
+print "Cluster Label",kmeans.predict([iid, rat])
+
 # NULL'''
