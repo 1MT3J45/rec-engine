@@ -1,6 +1,11 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 30 | 13th August, Sun
+* Clustering of Data is taken from user to avoid prolonged processing time
+* Clustering with Color coding in process
+* Prediction based on IBCF & UBCF now available
+
 ## DAY 29 | 11th August, Fri
 * Representation acquired in array format
 * NDArray format failed
