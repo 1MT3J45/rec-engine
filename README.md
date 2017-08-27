@@ -188,35 +188,3 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, 
 ## DAY 1 | 20th May, Sat
   * Trying basic examples as given on Forums and Tutorial sites
   * Basic program of reading CSV Files using CSV Package of python
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

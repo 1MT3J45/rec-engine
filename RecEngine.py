@@ -62,9 +62,9 @@ def user_based_cf(co_pe):
     algo.train(trainset)
     print "ALGORITHM USED", co_pe
 
-# --------------------------------------------- MARKERS
+# -------------------------------`-------------- MARKERS
 
-    f = io.open("AlgoHist_ub.txt", "wb")
+    f = io.open("_AlgoHist_ub.txt", "wb")
     f.write(repr(co_pe))
     f.close()
 
@@ -255,7 +255,7 @@ def item_based_cf(co_pe):
 
     # --------------------------------------------- MARKERS
 
-    f = io.open("AlgoHist_ib.txt", "wb")
+    f = io.open("_AlgoHist_ib.txt", "wb")
     f.write(repr(co_pe))
     f.close()
 
