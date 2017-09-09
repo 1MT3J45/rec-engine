@@ -1,6 +1,16 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 32 | 9th Sept., Sat
+* New Data prediction with NaN issues
+* New Data couldn't succeed to get into cluster
+* Functions to be Imported of RecEngine.py
+
+## DAY 31 | 27th August, Sun
+* Clusters now available on Storage
+* Plotting of Centroids possible
+* Tested
+
 ## DAY 30 | 13th August, Sun
 * Clustering of Data is taken from user to avoid prolonged processing time
 * Clustering with Color coding in process

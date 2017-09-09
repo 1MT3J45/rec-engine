@@ -10,7 +10,7 @@ print "NOTE:\tTo Generate all CSVs, please run RecEngine First."
 print "\t\tFind the RecEngine.py in same directory."
 # TODO ----------------- STAGE 1 Merger of Predicted and Rated Values (C)
 # ------------------------------------------ Conversion of Data Frames into files
-def make_cluster():
+def merge_and_make():
     columns = ['uid', 'iid', 'rat']
     choice = int(input("\n\t\tMERGE FRAMES\n\t\t1) IBCF + U.DATA\n\t\t2) UBCF + U.DATA\n\t\tEnter your Choice:"))
 
@@ -37,23 +37,23 @@ def make_cluster():
     handle.close()
 
     AllData = pd.read_csv("AllData.csv", low_memory=False)
+    df = pd.read_csv("AllData.csv", usecols=['uid', 'iid', 'rat'])
     print AllData.shape
 
 
     # ----------------------------------------- BUILD MAIN MATRIX
     AD_Matrix = AllData.drop_duplicates(subset=['uid', 'iid'])
     Pivot_Matrix = AD_Matrix.pivot(values='rat', index='uid', columns='iid')
-
-    #if choice is 1:
-    #    Pivot_Matrix.to_csv("MainMatrix_IBCF.csv")
-    #elif choice is 2:
-    #    Pivot_Matrix.to_csv("MainMatrix_UBCF.csv")
-    # AD_Matrix.reset_index().pivot(values=3, index=[0, 1], columns=2, aggfunc='mean')
+    print "Matrix: Generating..."
+    if choice is 1:
+       Pivot_Matrix.to_csv("MainMatrix_IBCF.csv")
+    elif choice is 2:
+       Pivot_Matrix.to_csv("MainMatrix_UBCF.csv")
+    print "Matrix: Done"
 
     # TODO ----------------- STAGE 2 Prep-ing data for Clustering
 
     records = int(input("Enter the no. of Records to be Fetched:"))
-    df = pd.read_csv("AllData.csv", usecols=['uid', 'iid', 'rat'])
     df_x = pd.read_csv("AllData.csv", usecols=['iid', 'rat'], nrows=records)
     print "UDATA -------------\n", udata_df.dtypes
     print "PRED_MATRIX -------\n", pred_matrix.dtypes
@@ -65,13 +65,7 @@ def make_cluster():
 
     # TODO ----------------- STAGE 3 KMeans Clustering
 
-    # someArray = df[['uid','iid','rat']].values
-    # df.loc[:, ['iid','rat']].values
-    # print "PRINTING X Data \n",X
-    # print "PRINTING Y Data \n",Y
-
     kmeans = KMeans(n_clusters=3).fit(X)
-    # KMeans.fit(X)
 
     centroids = kmeans.cluster_centers_
     label = kmeans.labels_
@@ -79,12 +73,11 @@ def make_cluster():
     print "CENTROIDS :", centroids
     print "LABEL :", label
 
-    colors = np.random.rand(50)  # {"g", "r", "b"}
     cl_0, cl_1, cl_2 = [], [], []
 
     for i in range(len(X)):
         print "\nCoordinate", X[i], "\nlabel:", label[i]
-        plt.plot(X[i][0], X[i][1], markersize = 100)
+        plt.plot(X[i][0], X[i][1], markersize=100)
         if label[i] == 0:
             print "LABELed 0: ", df.ix[i]['uid'], df.ix[i]['iid'], df.ix[i]['rat']
             cl_0.append((df.ix[i]['uid'], df.ix[i]['iid'], df.ix[i]['rat']))
@@ -95,11 +88,11 @@ def make_cluster():
             print "LABELed 2:", df.ix[i]['uid'], df.ix[i]['iid'], df.ix[i]['rat']
             cl_2.append((df.ix[i]['uid'], df.ix[i]['iid'], df.ix[i]['rat']))
 
-    plt.scatter(centroids[:, 0], centroids[:, 1], marker='x', s=150, linewidths= 5, zorder = 10)
+    plt.scatter(centroids[:, 0], centroids[:, 1], marker='+', s=150, linewidths= 5, zorder = 10)
     mylist = list(centroids)
     print "CENTROIDS:"
     for i in range(3):
-        print "   X", i+1, "   Y", i+1
+        print "\tX", i+1, "\t\t\tY", i+1
         print mylist[i]
     plt.show()
 
@@ -127,24 +120,37 @@ def make_cluster():
             writer.writerow((_1, _2, _3))
     two.close()
     print "All Cluster CSVs are now available on Storage disk"
+# ------------------------------------------------------------------------- EOM make_cluster()
 
-    #xx1 = []
-    #for i in range(5):
-    #    x1 = centroids[np.array([i])]
-    #    xx1.append(x1[i])
-    #    print "X", i+1,"Y", i+1
-    #    print xx1
 
 # TODO -------------- STAGE 4 Predict Cluster for new Data
-ip = pd.read_csv("input.csv",sep=",")
+def predict():
+    ip = pd.read_csv("input.csv",sep=",")
 
-# iid = int(input("Enter Item ID:"))
-# rat = float(input("Enter Rating:"))
+    X = ip.iloc[:, 0:3]
+    kmeans = KMeans(n_clusters=3).fit(X)
+
+    centroids = kmeans.cluster_centers_
+    label = kmeans.labels_
+
+    kmeans.predict(X[0, 1:3])
+    print "Centroids :\n",centroids
+    print "Cluster Nos.:\n", label
 
 # TODO -------------- STAGE 5 Give the Input file with records +943 UID
 # print "Cluster Label", kmeans.predict([iid, rat])
 
 # TODO -------------- STAGE 6
 
+
 # EXECUTION FLOW
-make_cluster()
+def choice():
+    print "Select appropriate option:\n1. Merge & Make Clusters \n2. Predict the Cluster of New Users \n3. "
+    choice = int(input("Ch:"))
+
+    if choice is 1:
+        merge_and_make()
+        predict()
+
+
+choice()
