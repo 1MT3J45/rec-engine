@@ -1,6 +1,11 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 33 | 25th Sept., Mon
+* Removed NaN values
+* Refined the Predict method
+* Added Option for Predict function
+
 ## DAY 32 | 9th Sept., Sat
 * New Data prediction with NaN issues
 * New Data couldn't succeed to get into cluster

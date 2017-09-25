@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import style
 from sklearn.cluster import KMeans
-import csv
+import csv, math
 
 style.use("ggplot")
 print "NOTE:\tTo Generate all CSVs, please run RecEngine First."
@@ -125,17 +125,30 @@ def merge_and_make():
 
 # TODO -------------- STAGE 4 Predict Cluster for new Data
 def predict():
-    ip = pd.read_csv("input.csv",sep=",")
 
-    X = ip.iloc[:, 0:3]
-    kmeans = KMeans(n_clusters=3).fit(X)
+    ip = pd.read_csv("input.csv",sep=",")
+    X1 = ip.dropna()
+    some_data = []
+
+    kmeans = KMeans(n_clusters=2).fit(X1)
+
+    for i in range(len(X1)):
+        some_data = kmeans.predict(X1)
 
     centroids = kmeans.cluster_centers_
     label = kmeans.labels_
 
-    kmeans.predict(X[0, 1:3])
     print "Centroids :\n",centroids
     print "Cluster Nos.:\n", label
+    print some_data
+
+    # CREATING TRIGGERS
+    Z = X1.iloc[:,[0]]
+    z1 = Z['uid'].unique()
+    z2 = list(set(some_data))
+
+    for i in range(2):
+        print "UID:",z1[i]," is in Cluster", z2[i-1] # Z2 is reversed due to sorted data struct. SET is used
 
 # TODO -------------- STAGE 5 Give the Input file with records +943 UID
 # print "Cluster Label", kmeans.predict([iid, rat])
@@ -150,6 +163,8 @@ def choice():
 
     if choice is 1:
         merge_and_make()
+
+    elif choice is 2:
         predict()
 
 
