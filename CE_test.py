@@ -143,12 +143,11 @@ def predict():
     print some_data
 
     # CREATING TRIGGERS
-    Z = X1.iloc[:,[0]]
-    z1 = Z['uid'].unique()
+    z1 = X1['uid'].unique()
     z2 = list(set(some_data))
 
     for i in range(2):
-        print "UID:",z1[i]," is in Cluster", z2[i-1] # Z2 is reversed due to sorted data struct. SET is used
+        print "UID:",z1[i]," is in Cluster", z2[i-1] # z2 is reversed due to sorted data struct. SET is used
 
 # TODO -------------- STAGE 5 Give the Input file with records +943 UID
 # print "Cluster Label", kmeans.predict([iid, rat])
