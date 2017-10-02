@@ -5,6 +5,7 @@ A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, 
 * ClusterRec now available
 * Serialization applied
 * Cluster Files created, needs Testing with Recommendation
+* Recommendation available in Run Time / Execution mode only
 
 ## DAY 34 | 29th Sept., Fri
 * Committing the Cluster Engine to Main file

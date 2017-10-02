@@ -79,12 +79,18 @@ elif flag2 is 3:
     post_df2 = pre_df13
 
 # EXPORT TO CSV & LOAD AGAIN IN PROGRAM
-post_df1.to_csv("post_df1.csv", sep=',', index=False)
+post_df1.to_csv("post_df1.csv", sep=',', index=False, header=False)
 post_df2.to_csv("post_df2.csv", sep=',', index=False)
 
 # Predicting Missing Data / NaN Values
-from surprise import KNNBasic, Reader, Dataset, evaluate, print_perf
+from surprise import Reader, Dataset, evaluate, print_perf, KNNBasic
 from collections import defaultdict
+import io
+import pandas as pd
+import csv
+from recsys.evaluation.decision import PrecisionRecallF1
+import time
+import numpy as np
 
 print "\n\t\t CLUSTER 1 PREDICTION" \
       "\n\tMODE: \n\t" \
@@ -108,8 +114,29 @@ elif algo is 2:
 sim_op = {'name': algo, 'user_based': mode}
 ops = KNNBasic(sim_options=sim_op)
 
-reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
+reader = Reader(line_format="user item rating", sep=',', rating_scale=(1, 5))
 df = Dataset.load_from_file('post_df1.csv', reader=reader)
+
+# -------------------------------------------------------------------------------- INCLUDING NECESSARY FUNCTIONS
+
+def get_top_n(predictions, n=5):
+    top_n = defaultdict(list)
+    uid = None
+
+    # MAPPING PREDICTIONS TO EACH USER
+    for uid, iid, true_r, est, _ in predictions:
+        top_n[uid].append((iid, est))
+
+    # THEN SORT THE PREDICTIONS FOR EACH USER AND RETRIEVE THE K Highest ones
+    # uid = 0
+    for iid, user_ratings in top_n.items():
+        user_ratings.sort(key=lambda x: x[1], reverse=True)
+        top_n[uid] = user_ratings[:n]
+    return top_n
+
+# --------------------------------------------------------------------------------
+
+trainset = df.build_full_trainset()
 
 # APPLYING ALGORITHM KNN Basic
 algo.train(trainset)
@@ -117,3 +144,7 @@ print "ALGORITHM USED", algo
 
 testset = trainset.build_anti_testset()
 predictions = algo.test(testset=testset)
+
+top_n = get_top_n(predictions, 5)
+
+print top_n
