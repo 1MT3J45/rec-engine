@@ -1,6 +1,10 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 34 | 29th Sept., Fri
+* Committing the Cluster Engine to Main file
+* Serialization applied for linking in 2 programs
+
 ## DAY 33 | 25th Sept., Mon
 * Removed NaN values
 * Refined the Predict method

@@ -7,7 +7,6 @@ from recsys.evaluation.decision import PrecisionRecallF1
 import time
 import numpy as np
 
-result = False  # Used as Flag, Do not invert the value
 headers = ['UserID', 'MovieID', 'Rating', 'TimeStamp']
 
 # LOADING DATA-SET
@@ -195,7 +194,7 @@ def get_top_n(predictions, n=5):
     for uid, iid, true_r, est, _ in predictions:
         top_n[uid].append((iid, est))
 
-    # THEN SORT SORT THE PREDICTIONS FOR EACH USER AND RETRIEVE THE K Highest ones
+    # THEN SORT THE PREDICTIONS FOR EACH USER AND RETRIEVE THE K Highest ones
     # uid = 0
     for iid, user_ratings in top_n.items():
         user_ratings.sort(key=lambda x: x[1], reverse=True)

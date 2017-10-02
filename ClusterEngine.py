@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import style
 from sklearn.cluster import KMeans
-import csv, math
+import csv, pickle
 
 style.use("ggplot")
 print "NOTE:\tTo Generate all CSVs, please run RecEngine First."
@@ -145,26 +145,34 @@ def predict():
     # CREATING TRIGGERS
     z1 = X1['uid'].unique()
     z2 = list(set(some_data))
+    pic_file = []
 
+    # TODO -------------- STAGE 6 Sequencing Functions
     for i in range(2):
         print "UID:",z1[i]," is in Cluster", z2[i-1] # z2 is reversed due to sorted data struct. SET is used
+        pic_file.append(z1[i])
+        pic_file.append(z2[i-1])
 
-# TODO -------------- STAGE 5 Give the Input file with records +943 UID
-# print "Cluster Label", kmeans.predict([iid, rat])
-
-# TODO -------------- STAGE 6
-
+    # TODO -------------- STAGE 5 Store the Output to a serialized file
+        fp = open("shared.pkl", "w")
+        pickle.dump(pic_file, fp)
+        print "File PICKLED / SERIALIZED for Cluster Recommendation"
 
 # EXECUTION FLOW
-def choice():
-    print "Select appropriate option:\n1. Merge & Make Clusters \n2. Predict the Cluster of New Users \n3. "
+def choice_fun():
+    print "\n\t\tSelect appropriate option:\n\t1. Merge & Make Clusters \n\t2. Predict the Cluster of New Users \n\t3. Exit"
     choice = int(input("Ch:"))
 
     if choice is 1:
         merge_and_make()
+        choice_fun()
 
     elif choice is 2:
         predict()
+        choice_fun()
 
+    elif choice is 3:
+        print "Exiting..."
+        exit(0)
 
-choice()
+choice_fun()
