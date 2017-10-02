@@ -1,9 +1,15 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 35 | 2nd Oct., Mon
+* ClusterRec now available
+* Serialization applied
+* Cluster Files created, needs Testing with Recommendation
+
 ## DAY 34 | 29th Sept., Fri
 * Committing the Cluster Engine to Main file
 * Serialization applied for linking in 2 programs
+* Deprecated CETest file, committing in ClusterEngine.py
 
 ## DAY 33 | 25th Sept., Mon
 * Removed NaN values
