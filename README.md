@@ -1,6 +1,12 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+
+## DAY 36 | 3rd Oct., Tue
+* Added SurPRISE package for Prediction using Cosine & Pearson
+* Added Input.csv as sample input used for ClusterEngine.py
+* Cleared few bugs, yet Type conversion issue persists
+
 ## DAY 35 | 2nd Oct., Mon
 * ClusterRec now available
 * Serialization applied
