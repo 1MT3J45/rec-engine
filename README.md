@@ -1,6 +1,11 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 37 | 4th Oct., Wed
+* Removed 2 Stage errors of DF importing &  Prediction
+* Added unit TimeStamp column for resolving errors
+* Few bugs persist yet workable if not exploited
+* Deprecated **input.csv**, download updated new _**input.csv**_
 
 ## DAY 36 | 3rd Oct., Tue
 * Added SurPRISE package for Prediction using Cosine & Pearson

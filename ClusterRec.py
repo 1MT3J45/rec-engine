@@ -61,7 +61,7 @@ elif cid[0] == 2:
     pre_df03 = cl2.append(df_u1, ignore_index=True); print "U1 in CL2"
     flag1 = 3
 else:
-    print "Exception occured"
+    print "Exception occurred"
     exit(0)
 
 # for df_u2 i.e Second User in List
@@ -75,7 +75,7 @@ elif cid[1] == 2:
     pre_df13 = cl2.append(df_u2, ignore_index=True); print "U2 in CL2"
     flag2 = 3
 else:
-    print "Exception occured"
+    print "Exception occurred"
     exit(0)
 
 # Switching on only pre_df's that are created
@@ -105,9 +105,20 @@ elif flag2 is 3:
     print pre_df13
     post_df2 = pre_df13
 
+tup1 = post_df1.shape
+tup2 = post_df2.shape
+size_of1 = tup1[0]
+size_of2 = tup2[0]
 # EXPORT TO CSV & LOAD AGAIN IN PROGRAM
-post_df1.to_csv("post_df1.csv", sep=',', index=False, header=False)
-post_df2.to_csv("post_df2.csv", sep=',', index=False, header=False)
+post_df1 = np.append(arr=post_df1, values=np.ones((size_of1,1)).astype(int), axis=1)
+post_df2 = np.append(arr=post_df2, values=np.ones((size_of2,1)).astype(int), axis=1)
+np.savetxt('debugger1.csv', post_df1, delimiter='\t')
+np.savetxt('debugger2.csv', post_df2, delimiter='\t')
+# post_df1.to_csv("post_df1.csv", sep='\t', index=False, header=False)
+# post_df2.to_csv("post_df2.csv", sep='\t', index=False, header=False)
+# post_df1 = np.append(arr=post_df1, values=np.ones((506,1)).astype(int), axis=1)
+# np.savetxt('debugger.csv', post_df1, delimiter='\t')
+# df = Dataset.load_from_file('debugger.csv', reader=reader)    THIS WORKS!
 
 
 # Predicting Missing Data / NaN Values
@@ -131,8 +142,8 @@ def get_top_n(predictions, n=5):            # ======== FUNCTION START
 sim_op = {'name': algo, 'user_based': mode}
 algo = KNNBasic(sim_options=sim_op)
 
-reader = Reader(line_format="user item rating", sep=',', rating_scale=(1, 5))
-df = Dataset.load_from_file('post_df1.csv', reader=reader)
+reader = Reader(line_format="user item rating", sep='\t')
+df = Dataset.load_from_file('debugger1.csv', reader=reader)
 
 # START TRAINING
 trainset = df.build_full_trainset()
@@ -146,9 +157,32 @@ predictions = algo.test(testset=testset)
 
 top_n = get_top_n(predictions, 5)
 
+# ---------------------------------------------------- PREDICTION VERIFICATION
+
+search_key = raw_input("Enter User ID:")
+item_id = raw_input("Enter Item ID:")
+actual_rating = input("Enter actual Rating:")
+
+print algo.predict(str(search_key), item_id, actual_rating)
+
+testset = trainset.build_anti_testset()
+predictions = algo.test(testset=testset)
+
+top_n = get_top_n(predictions, 5)
+result_u = True
+
+# k = input("Enter size of Neighborhood (Min:1, Max:40)")
+#
+# inner_id = algo.trainset.to_inner_iid(search_key)
+# neighbors = algo.get_neighbors(inner_id, k=k)
+# print "Nearest Matching users are:"
+# for i in neighbors:
+#     print "\t "*6, i
+# print top_n, result_u
+
 # ---------------------------------------------------- UBCF as is
 
-csvfile = 'pred_matrix-full_ubcf.csv'
+csvfile = 'DEBUGGER.csv'
 with open(csvfile, "w") as output:
     writer = csv.writer(output, delimiter=',', lineterminator='\n')
     writer.writerow(['uid', 'iid', 'rat'])
@@ -156,7 +190,7 @@ with open(csvfile, "w") as output:
         for (iid, r) in user_ratings:
             value = uid, iid, r
             writer.writerow(value)
-print "Done! You may now check the file in same Dir. as of Program"
+print "Done! You may now check the file %s in same Dir. as of Program"%(csvfile)
 # ------------------------------------------------------------- TRAIL & ERROR
 
 sim_op = {'name': algo, 'user_based': mode}
