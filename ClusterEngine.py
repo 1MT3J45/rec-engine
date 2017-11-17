@@ -94,7 +94,10 @@ def merge_and_make():
     for i in range(3):
         print "\tX", i+1, "\t\t\tY", i+1
         print mylist[i]
+    print ("Please Close the GRAPH Window to Continue.\n Any input before Menu will "
+           "terminate the program")
     plt.show()
+
 
     print "\n--- CLUSTER 0 Count--- \n", len(cl_0)
     with open('cluster0.csv','w+') as zero:
@@ -162,17 +165,19 @@ def predict():
 def choice_fun():
     print "\n\t\tSelect appropriate option:\n\t1. Merge & Make Clusters \n\t2. Predict the Cluster of New Users \n\t3. Exit"
     choice = int(input("Ch:"))
+    try:
+        if choice is 1:
+            merge_and_make()
+            choice_fun()
 
-    if choice is 1:
-        merge_and_make()
-        choice_fun()
+        elif choice is 2:
+            predict()
+            choice_fun()
 
-    elif choice is 2:
-        predict()
-        choice_fun()
-
-    elif choice is 3:
-        print "Exiting..."
-        exit(0)
+        elif choice is 3:
+            print "Exiting..."
+            exit(0)
+    except Exception as e:
+        print "Follow the FLOW of code, \nERROR:",e
 
 choice_fun()

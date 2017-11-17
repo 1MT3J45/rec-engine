@@ -1,6 +1,16 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 38 | 17th Nov., Thu
+* Resolved Issues of
+    * Unhandled exception
+    * Exporting Processed values of Cluster
+* Handled 2 exceptions for accidental termination
+
+## DAY XX | -
+* Menu driven
+* Tested with 8000 Values for 60 mins
+
 ## DAY 37 | 4th Oct., Wed
 * Removed 2 Stage errors of DF importing &  Prediction
 * Added unit TimeStamp column for resolving errors

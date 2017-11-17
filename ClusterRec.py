@@ -1,12 +1,8 @@
 import pandas as pd
-import pickle
+import pickle, csv
 # --------------------------
 from surprise import Reader, Dataset, evaluate, print_perf, KNNBasic
 from collections import defaultdict
-import io
-import csv
-from recsys.evaluation.decision import PrecisionRecallF1
-import time
 import numpy as np
 
 fp = open("shared.pkl")
@@ -30,7 +26,7 @@ df_u1 = cld[cld['uid']==uid[0]]
 df_u2 = cld[cld['uid']==uid[1]]
 
 flag1, flag2 = 0, 0
-print "\n\t\t CLUSTER 1 PREDICTION" \
+print "\n\t\t CLUSTER REC" \
       "\n\tMODE: \n\t" \
       "\n\t(1) User Based" \
       "\n\t(2) Item Based"
@@ -86,39 +82,47 @@ post_df2 = pd.DataFrame
 # PRE PROCESSED CLUSTER 0 -- Named to POST DataFrame1
 if flag1 is 1:
     print pre_df01
-    post_df1 = pre_df01.iloc[1:, :]
+    post_df1 = pre_df01 #.iloc[0:, :]
+    print "post_df01 ---- PRINTED"
 elif flag1 is 2:
     print pre_df02
-    post_df1 = pre_df02.iloc[1:, :]
+    post_df1 = pre_df02 #.iloc[0:, :]
+    print "post_df02 ---- PRINTED"
 elif flag1 is 3:
     print pre_df03
-    post_df1 = pre_df03.iloc[1:, :]
+    post_df1 = pre_df03 #.iloc[0:, :]
+    print "post_df03 ---- PRINTED"
+
+# ----------------------------------------------------- EXPORTING POST PRO C0
+post_df1.to_csv("C0-Processed.csv",sep=',', index_label=False, index=False)
 
 # PRE PROCESSED CLUSTER 1 -- Named to POST DataFrame2
 if flag2 is 1:
     print pre_df11
     post_df2 = pre_df11
+    print "post_df11 ---- PRINTED"
 elif flag2 is 2:
     print pre_df12
     post_df2 = pre_df12
+    print "post_df12 ---- PRINTED"
 elif flag2 is 3:
     print pre_df13
     post_df2 = pre_df13
+    print "post_df13 ---- PRINTED"
+
+# ----------------------------------------------------- EXPORTING POST PRO C1
+post_df2.to_csv("C1-Processed.csv", sep=',', index_label=False, index=False)
 
 tup1 = post_df1.shape
 tup2 = post_df2.shape
 size_of1 = tup1[0]
 size_of2 = tup2[0]
-# EXPORT TO CSV & LOAD AGAIN IN PROGRAM
+# APPENDING UNIT TIMESTAMP TO EXPORT USING SurPRISE PKG
 post_df1 = np.append(arr=post_df1, values=np.ones((size_of1,1)).astype(int), axis=1)
 post_df2 = np.append(arr=post_df2, values=np.ones((size_of2,1)).astype(int), axis=1)
-np.savetxt('debugger1.csv', post_df1, delimiter='\t')
-np.savetxt('debugger2.csv', post_df2, delimiter='\t')
-# post_df1.to_csv("post_df1.csv", sep='\t', index=False, header=False)
-# post_df2.to_csv("post_df2.csv", sep='\t', index=False, header=False)
-# post_df1 = np.append(arr=post_df1, values=np.ones((506,1)).astype(int), axis=1)
-# np.savetxt('debugger.csv', post_df1, delimiter='\t')
-# df = Dataset.load_from_file('debugger.csv', reader=reader)    THIS WORKS!
+# EXPORT TO CSV & LOAD AGAIN IN PROGRAM
+np.savetxt('po_cluster0.csv', post_df1, delimiter='\t')
+np.savetxt('po_cluster1.csv', post_df2, delimiter='\t')
 
 
 # Predicting Missing Data / NaN Values
@@ -143,46 +147,38 @@ sim_op = {'name': algo, 'user_based': mode}
 algo = KNNBasic(sim_options=sim_op)
 
 reader = Reader(line_format="user item rating", sep='\t')
-df = Dataset.load_from_file('debugger1.csv', reader=reader)
-
+df0 = Dataset.load_from_file('po_cluster0.csv', reader=reader)
+df1 = Dataset.load_from_file('po_cluster1.csv', reader=reader)
 # START TRAINING
-trainset = df.build_full_trainset()
+trainset = df0.build_full_trainset()
 
 # APPLYING ALGORITHM KNN Basic
 algo.train(trainset)
-print "ALGORITHM USED", algo
+print "ALGORITHM USED: \n", algo
 
 testset = trainset.build_anti_testset()
 predictions = algo.test(testset=testset)
 
 top_n = get_top_n(predictions, 5)
 
-# ---------------------------------------------------- PREDICTION VERIFICATION
-
-search_key = raw_input("Enter User ID:")
-item_id = raw_input("Enter Item ID:")
-actual_rating = input("Enter actual Rating:")
-
-print algo.predict(str(search_key), item_id, actual_rating)
-
-testset = trainset.build_anti_testset()
-predictions = algo.test(testset=testset)
-
-top_n = get_top_n(predictions, 5)
-result_u = True
-
-# k = input("Enter size of Neighborhood (Min:1, Max:40)")
+# # ---------------------------------------------------- PREDICTION VERIFICATION - CL0 (945)
+# print "\t\tINITIATING IN CLUSTER 0 (945)\n"
+# search_key = raw_input("Enter User ID:")
+# item_id = raw_input("Enter Item ID:")
+# actual_rating = input("Enter actual Rating:")
 #
-# inner_id = algo.trainset.to_inner_iid(search_key)
-# neighbors = algo.get_neighbors(inner_id, k=k)
-# print "Nearest Matching users are:"
-# for i in neighbors:
-#     print "\t "*6, i
-# print top_n, result_u
+# print algo.predict(str(search_key), item_id, actual_rating)
+#
+# # ---------------------------------------------------- PREDICTION VERIFICATION - CL1 (944)
+# print "\t\tINITIATING IN CLUSTER 1 (944)\n"
+# search_key = raw_input("Enter User ID:")
+# item_id = raw_input("Enter Item ID:")
+# actual_rating = input("Enter actual Rating:")
+#
+# print algo.predict(str(search_key), item_id, actual_rating)
 
-# ---------------------------------------------------- UBCF as is
-
-csvfile = 'DEBUGGER.csv'
+# --------------------- GENERATE FULL PREDICTION
+csvfile = 'pred_matrix-Cluster0.csv'
 with open(csvfile, "w") as output:
     writer = csv.writer(output, delimiter=',', lineterminator='\n')
     writer.writerow(['uid', 'iid', 'rat'])
@@ -190,31 +186,6 @@ with open(csvfile, "w") as output:
         for (iid, r) in user_ratings:
             value = uid, iid, r
             writer.writerow(value)
-print "Done! You may now check the file %s in same Dir. as of Program"%(csvfile)
-# ------------------------------------------------------------- TRAIL & ERROR
-
-sim_op = {'name': algo, 'user_based': mode}
-ops = KNNBasic(sim_options=sim_op)
-
-reader = Reader(line_format="UID IID RAT", sep=',')
-df = Dataset.load_from_file('post_df1.csv', reader=reader)
-
-# -------------------------------------------------------------------------------- INCLUDING NECESSARY FUNCTIONS
-
-
-
-
-# --------------------------------------------------------------------------------
-
-trainset = df.build_full_trainset()
-
-# APPLYING ALGORITHM KNN Basic
-algo.train(trainset)
-print "ALGORITHM USED", algo
-
-testset = trainset.build_anti_testset()
-predictions = algo.test(testset=testset)
-
-top_n = get_top_n(predictions, 5)
-
-print top_n
+print "\nPROCESSING COMPLETE: \nCheck files with Name\n" \
+      "C0-Processed.csv\n" \
+      "C1-Processed.csv"
