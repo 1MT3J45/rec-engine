@@ -149,43 +149,114 @@ algo = KNNBasic(sim_options=sim_op)
 reader = Reader(line_format="user item rating", sep='\t')
 df0 = Dataset.load_from_file('po_cluster0.csv', reader=reader)
 df1 = Dataset.load_from_file('po_cluster1.csv', reader=reader)
-# START TRAINING
-trainset = df0.build_full_trainset()
 
-# APPLYING ALGORITHM KNN Basic
-algo.train(trainset)
-print "ALGORITHM USED: \n", algo
 
-testset = trainset.build_anti_testset()
-predictions = algo.test(testset=testset)
+def pred_cluster0():
+    # START TRAINING
+    trainset = df0.build_full_trainset()
 
-top_n = get_top_n(predictions, 5)
+    # APPLYING ALGORITHM KNN Basic
+    algo.train(trainset)
+    print "ALGORITHM USED: \n", algo
 
-# ---------------------------------------------------- PREDICTION VERIFICATION - CL0 (945)
-print "\t\tINITIATING IN CLUSTER 0 (945)\n"
-search_key = raw_input("Enter User ID:")
-item_id = raw_input("Enter Item ID:")
-actual_rating = input("Enter actual Rating:")
+    testset = trainset.build_anti_testset()
+    predictions = algo.test(testset=testset)
 
-print algo.predict(str(search_key), item_id, actual_rating)
+    top_n0 = get_top_n(predictions, 5)
 
-# ---------------------------------------------------- PREDICTION VERIFICATION - CL1 (944)
-print "\t\tINITIATING IN CLUSTER 1 (944)\n"
-search_key = raw_input("Enter User ID:")
-item_id = raw_input("Enter Item ID:")
-actual_rating = input("Enter actual Rating:")
+    # ---------------------------------------------------- PREDICTION VERIFICATION - CL1 (944)
+    print "\t\tINITIATING IN CLUSTER 1\n"
+    search_key = raw_input("Enter User ID:")
+    item_id = raw_input("Enter Item ID:")
+    actual_rating = input("Enter actual Rating:")
 
-print algo.predict(str(search_key), item_id, actual_rating)
+    print algo.predict(str(search_key), item_id, actual_rating)
+
+    return top_n0
+
+def pred_cluster1():
+    # START TRAINING
+    trainset = df1.build_full_trainset()
+
+    # APPLYING ALGORITHM KNN Basic
+    algo.train(trainset)
+    print "ALGORITHM USED: \n", algo
+
+    testset = trainset.build_anti_testset()
+    predictions = algo.test(testset=testset)
+
+    top_n1 = get_top_n(predictions, 5)
+
+    # ---------------------------------------------------- PREDICTION VERIFICATION - CL1
+    print "\t\tINITIATING IN CLUSTER 0\n"
+    search_key = raw_input("Enter User ID:")
+    item_id = raw_input("Enter Item ID:")
+    actual_rating = input("Enter actual Rating:")
+
+    print algo.predict(str(search_key), item_id, actual_rating)
+
+    return top_n1
+
+
+# ------------------------------------------------------------------------------------- TRIAL & ERROR MODE
+from sklearn.cluster import KMeans
+def predict():
+
+    ip = pd.read_csv("input.csv",sep=",")
+    X1 = ip.dropna()
+    some_data = []
+
+    kmeans = KMeans(n_clusters=2).fit(X1)
+
+    for i in range(len(X1)):
+        some_data = kmeans.predict(X1)
+
+    centroids = kmeans.cluster_centers_
+    label = kmeans.labels_
+
+    print "Centroids :\n",centroids
+    print "Cluster Nos.:\n", label
+    print some_data
+
+    # CREATING TRIGGERS
+    z1 = X1['uid'].unique()
+    z2 = pd.unique(some_data)
+    pic_file = []
+
+    # TODO -------------- STAGE 6 Sequencing Functions
+    for i in range(len(z1)):
+        print "UID:",z1[i]," is in Cluster", z2[i-1] # z2 is reversed due to sorted data struct. SET is used
+
+    # # TODO -------------- STAGE 5 Store the Output to a serialized file
+    #     fp = open("shared.pkl", "w")
+    #     pickle.dump(pic_file, fp)
+    #     print "File PICKLED / SERIALIZED for Cluster Recommendation"
+
+# ================================ EXECUTION FLOW =====================================
+top_n0 = pred_cluster0()
+top_n1 = pred_cluster1()
 
 # --------------------- GENERATE FULL PREDICTION
-csvfile = 'pred_matrix-Cluster0.csv'
-with open(csvfile, "w") as output:
+
+print "Generating Prediction Matrix for Cluster 0"
+with open('pred_matrix-Cluster0.csv', "w") as output:
     writer = csv.writer(output, delimiter=',', lineterminator='\n')
     writer.writerow(['uid', 'iid', 'rat'])
-    for uid, user_ratings in top_n.items():
+    for uid, user_ratings in top_n0.items():
         for (iid, r) in user_ratings:
             value = uid, iid, r
             writer.writerow(value)
+
+print "Generating Prediction Matrix for Cluster 1"
+with open('pred_matrix-Cluster1.csv', "w") as output:
+    writer = csv.writer(output, delimiter=',', lineterminator='\n')
+    writer.writerow(['uid', 'iid', 'rat'])
+    for uid, user_ratings in top_n1.items():
+        for (iid, r) in user_ratings:
+            value = uid, iid, r
+            writer.writerow(value)
+
+
 print "\nPROCESSING COMPLETE: \nCheck files with Name\n" \
-      "C0-Processed.csv\n" \
-      "C1-Processed.csv"
+      "pred_matrix-Cluster0.csv\n" \
+      "pred_matrix-Cluster1.csv"

@@ -129,11 +129,11 @@ def merge_and_make():
 # TODO -------------- STAGE 4 Predict Cluster for new Data
 def predict():
 
-    ip = pd.read_csv("input.csv",sep=",")
-    X1 = ip.dropna()
+    X1 = pd.read_csv("input.csv",sep=",")
+    # X1 = ip.dropna() # Drop any NaN values if exists
     some_data = []
 
-    kmeans = KMeans(n_clusters=2).fit(X1)
+    kmeans = KMeans(n_clusters=3).fit(X1)
 
     for i in range(len(X1)):
         some_data = kmeans.predict(X1)
