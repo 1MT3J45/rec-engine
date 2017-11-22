@@ -1,6 +1,14 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+
+
+## DAY 39 | 22nd Nov., Fri
+* Created new Test file (for ClusterRec.py)
+* Shifted Prediction module to TEST.py
+* Unhandled exception for Clusters' overflow termination
+* Prediction Files are now generated and stored in CSV format
+
 ## DAY 38 | 17th Nov., Thu
 * Resolved Issues of
     * Unhandled exception
