@@ -28,6 +28,7 @@ def merge_and_make():
 
     udata_df = pd.read_csv("udata.csv", skipinitialspace=True, usecols=columns)
     print "Exporting CSV, Please be Patient."
+    udata_df = udata_df.sort_values(by='uid')
 
     # ------------------------------------------ Merging into Main File
 
@@ -43,6 +44,7 @@ def merge_and_make():
 
     # ----------------------------------------- BUILD MAIN MATRIX
     AD_Matrix = AllData.drop_duplicates(subset=['uid', 'iid'])
+    AD_Matrix = AD_Matrix.sort_values(by='uid')
     Pivot_Matrix = AD_Matrix.pivot(values='rat', index='uid', columns='iid')
     print "Matrix: Generating..."
     if choice is 1:
