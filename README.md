@@ -1,7 +1,11 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
-
+## DAY 40 | 28th Nov., Tue
+* Backtracked to ClusterRec.py, encountered incorrect format of data as input
+* Deprecation warning: ClusterRec will no longer be used
+* Clustering now available in SuperCluster.py using sklearn
+* Cluster separation into dataframes will be available in next update
 
 ## DAY 39 | 22nd Nov., Fri
 * Created new Test file (for ClusterRec.py)
