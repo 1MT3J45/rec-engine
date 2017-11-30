@@ -12,7 +12,7 @@ X = dataset.iloc[:,1:1682].values
 
 wcss = []
 for i in range(1, 11):
-    kmeans = KMeans(n_clusters = i, init = 'k-means++', random_state = 0)
+    kmeans = KMeans(n_clusters=i, init='k-means++', random_state=0)
     kmeans.fit(X)
     wcss.append(kmeans.inertia_)
 plt.plot(range(1, 11), wcss)
@@ -21,39 +21,21 @@ plt.xlabel('Number of clusters')
 plt.ylabel('WCSS')
 plt.show()
 
-kmeans = KMeans(n_clusters = 4, init = 'k-means++', random_state = 0)
-y_kmeans = kmeans.fit_predict(X)
-value = 0
+# KMeans Clustering
+kmeans = KMeans(n_clusters=4, init='k-means++', random_state=0)     # KMeans clustering
+y_kmeans = kmeans.fit_predict(X)        # Predicted Clusters for Each record
 
-# X_df = pd.DataFrame(X)
-#
-# # Adding individual values into Cluster files
-# clf0 = pd.DataFrame
-# clf1 = pd.DataFrame
-# clf2 = pd.DataFrame
-# clf3 = pd.DataFrame
-# _0, _1, _2, _3 = 0,0,0,0
-# for i in range(len(X)):
-#     if y_kmeans[i] is 0:
-#         clf0.append(X_df[i])
-#         _0+=1
-#     elif y_kmeans[3] is 1:
-#         clf1.loc[_1] = pd.concat(X_df[i])
-#         _1 += 1
-#     elif y_kmeans[i] is 2:
-#         clf1.loc[_2] = X_df[i]
-#         _2 += 1
-#     elif y_kmeans[i] is 3:
-#         clf1.loc[_3] = X_df[i]
-#         _3 += 1
+# Conversion into List from Dataframe
+y_km = list(y_kmeans)       # Converting ndarray into List
+X_df = pd.DataFrame(X, index=np.arange(1,X.__len__()+1))      # Converting ndarray into Dataframe
+X_df = pd.DataFrame(columns=X_df.columns.__len__()+1)
 
+cluster = {k:g for k, g in X_df.groupby(y_kmeans)}  # Dividing records into Clusters
 
-csvfile = 'super_clusterX.csv'
-with open(csvfile, "w") as output:
-    writer = csv.writer(output, delimiter=',', lineterminator='\n')
-    for i in range(942):
-        writer.writerow(i)
-        writer.writerow(X_df.iloc[i])
+D0 = cluster[0]
+D1 = cluster[1]
+D2 = cluster[2]
+D3 = cluster[3]
 
 # Visualising the clusters
 plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 100, c = 'red', label = 'Cluster 1')
@@ -67,3 +49,11 @@ plt.xlabel('Rating')
 plt.ylabel('Movies')
 plt.legend()
 plt.show()
+
+# TODO --- Take a Randomized input file
+
+# TODO --- Predict the cluster for them
+
+# TODO --- Push them to respective cluster
+
+# TODO --- Predict the rest of the ratings of those new users

@@ -1,6 +1,10 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 41 | 1st Dec., Fri
+* Resolved the issue of Cluster importing
+* Cleared Dictionary formats into Dataframes
+
 ## DAY 40 | 28th Nov., Tue
 * Backtracked to ClusterRec.py, encountered incorrect format of data as input
 * Deprecation warning: ClusterRec will no longer be used
