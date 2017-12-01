@@ -4,33 +4,49 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 import csv
 
-dataset = pd.read_csv("universal_ibcf.csv")
+file=0
+try:
+    file = input("Choose your File Name:\n 0. MainMatrix_IBCF.csv\n 1. MainMatrix_UBCF.csv\n ch no (0 or 1):")
+except Exception as e:
+    print "NOTE:",e
+
+if file is 0:
+    dataset = pd.read_csv("MainMatrix_IBCF.csv")
+elif file is 1:
+    dataset = pd.read_csv("MainMatrix_UBCF.csv")
+elif file is 2:
+    dataset = pd.read_csv("input.csv")
+    dataset.dropna()
+
 dataset = dataset.drop_duplicates()
 dataset = dataset.dropna()
 print dataset.shape
-X = dataset.iloc[:,1:1682].values
+X = dataset.iloc[:,1:1682].values   # Experimental
+X = np.delete(X, (941),axis=0)      # Experimental
 
 wcss = []
-for i in range(1, 11):
+for i in range(1, 7):
     kmeans = KMeans(n_clusters=i, init='k-means++', random_state=0)
     kmeans.fit(X)
     wcss.append(kmeans.inertia_)
-plt.plot(range(1, 11), wcss)
+plt.plot(range(1, 7), wcss)
 plt.title('The Elbow Method')
 plt.xlabel('Number of clusters')
 plt.ylabel('WCSS')
 plt.show()
 
 # KMeans Clustering
-kmeans = KMeans(n_clusters=4, init='k-means++', random_state=0)     # KMeans clustering
+no_of_clusters = 4
+kmeans = KMeans(n_clusters=no_of_clusters, init='k-means++', random_state=0)     # KMeans clustering
 y_kmeans = kmeans.fit_predict(X)        # Predicted Clusters for Each record
 
 # Conversion into List from Dataframe
 y_km = list(y_kmeans)       # Converting ndarray into List
-X_df = pd.DataFrame(X, index=np.arange(1,X.__len__()+1))      # Converting ndarray into Dataframe
-X_df = pd.DataFrame(columns=X_df.columns.__len__()+1)
+X_df = pd.DataFrame(X)
+X_df = pd.DataFrame(X_df ,columns=np.arange(1,X_df.columns.__len__()) ,index=np.arange(1,X_df.__len__()+1))
 
 cluster = {k:g for k, g in X_df.groupby(y_kmeans)}  # Dividing records into Clusters
+X_df = X_df.dropna(axis=0)
 
 D0 = cluster[0]
 D1 = cluster[1]
@@ -43,17 +59,89 @@ plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 100, c = 'blue', label
 plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s = 100, c = 'green', label = 'Cluster 3')
 plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s = 100, c = 'cyan', label = 'Cluster 4')
 # plt.scatter(X[y_kmeans == 4, 0], X[y_kmeans == 4, 1], s = 100, c = 'magenta', label = 'Cluster 5')
+    #In case of 5th Cluster arises
 plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s = 300, c = 'yellow', label = 'Centroids')
+
 plt.title('Clusters of Users')
 plt.xlabel('Rating')
 plt.ylabel('Movies')
 plt.legend()
 plt.show()
 
-# TODO --- Take a Randomized input file
+# TODO --- Read a Randomized input file
+ip_df = pd.read_csv("input_NaN.csv")
 
-# TODO --- Predict the cluster for them
+from surprise import Reader, Dataset, evaluate, print_perf, KNNBasic
+from collections import defaultdict
+
+def get_top_n(predictions, n=5):
+    top_n = defaultdict(list)
+    uid = None
+
+    # MAPPING PREDICTIONS TO EACH USER
+    for uid, iid, true_r, est, _ in predictions:
+        top_n[uid].append((iid, est))
+
+    # THEN SORT THE PREDICTIONS FOR EACH USER AND RETRIEVE THE K Highest ones
+    # uid = 0
+    for iid, user_ratings in top_n.items():
+        user_ratings.sort(key=lambda x: x[1], reverse=True)
+        top_n[uid] = user_ratings[:n]
+    return top_n
+
+
+# ----------------------------------------- GENERATION OF PREDICTION MATRIX
+def gen_pred_matrix(co_pe):
+
+    # ---------------------------------------------------- UBCF as is
+
+    # INITIALIZE REQUIRED PARAMETERS
+    # path = 'ml-100k/u.user'
+    sim_op = {'name': co_pe, 'user_based': file}
+    algo = KNNBasic(sim_options=sim_op)
+    global ip_df
+    ip_df = ip_df.iloc[0:,:5]
+
+    reader = Reader(line_format="uid 1 2 3 4 5", sep=',', rating_scale=(1, 5))
+    df = Dataset.load_from_file(ip_df, reader=reader)
+
+    # START TRAINING
+    trainset = df.build_full_trainset()
+
+    # APPLYING ALGORITHM KNN Basic
+    algo.train(trainset)
+    print "ALGORITHM USED", co_pe
+
+    testset = trainset.build_anti_testset()
+    predictions = algo.test(testset=testset)
+
+    top_n = get_top_n(predictions, 5)
+
+    # ---------------------------------------------------- UBCF as is
+
+    csvfile = 'PRED-MATRIX-CLUSTER %d.csv'%(np.random.randint(100,200))
+    with open(csvfile, "w") as output:
+        writer = csv.writer(output, delimiter=',', lineterminator='\n')
+        writer.writerow(['uid']+range(0,len(ip_df)))
+        for uid, user_ratings in top_n.items():
+            for (iid, r) in user_ratings:
+                value = uid, iid, r
+                writer.writerow(value)
+    print "Done! Check File with Name:",csvfile
 
 # TODO --- Push them to respective cluster
 
+
+# TODO --- Predict the NaN values for new Inputs
+
 # TODO --- Predict the rest of the ratings of those new users
+
+# Control Flow
+ch = input("Choice of Algorithm?\n 1. Cosine\n 2. Pearson")
+
+if ch is 1:
+    algorithm = 'cosine'
+elif ch is 2:
+    algorithm = 'pearson'
+
+gen_pred_matrix(algorithm)
