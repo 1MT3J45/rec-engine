@@ -39,6 +39,7 @@ def merge_and_make():
 
     AllData = pd.read_csv("AllData.csv", low_memory=False)
     df = pd.read_csv("AllData.csv", usecols=['uid', 'iid', 'rat'])
+    df.drop_duplicates()
     print AllData.shape
 
 
@@ -48,7 +49,7 @@ def merge_and_make():
     Pivot_Matrix = AD_Matrix.pivot(values='rat', index='uid', columns='iid')
     print "Matrix: Generating..."
     if choice is 1:
-       Pivot_Matrix.to_csv("MainMatrix_IBCF.csv")
+       Pivot_Matrix.to_csv("MainMatrix_IBCF_new.csv")
     elif choice is 2:
        Pivot_Matrix.to_csv("MainMatrix_UBCF.csv")
     print "Matrix: Done"

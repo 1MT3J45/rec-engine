@@ -1,262 +1,204 @@
-import pandas as pd
-import pickle, csv
-# --------------------------
-from surprise import Reader, Dataset, evaluate, print_perf, KNNBasic
-from collections import defaultdict
+# import pandas as pd
+# import numpy as np
+# import matplotlib.pyplot as plt
+# from sklearn.cluster import KMeans
+# import csv
+#
+# # TODO -- Initiate Selection of Matrix Files
+#
+# file=0
+# try:
+#     file = input("Choose your File Name:\n 0. MainMatrix_IBCF.csv\n 1. MainMatrix_UBCF.csv\n ch no (0 or 1):")
+# except Exception as e:
+#     print "NOTE:",e
+#
+# dataset = pd.DataFrame
+# if file is 0:
+#     dataset = pd.read_csv("MainMatrix_IBCF.csv")
+# elif file is 1:
+#     dataset = pd.read_csv("MainMatrix_UBCF.csv")
+#
+#
+# def graphCall1(wcss):
+#     plt.plot(range(1, 7), wcss)
+#     plt.title('The Elbow Method')
+#     plt.xlabel('Number of clusters')
+#     plt.ylabel('WCSS')
+#     plt.show()
+#
+#
+# def graphCall2(X, y_kmeans, kmeans):
+#     # Visualising the clusters
+#     plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s=100, c='red', label='Cluster 1')
+#     plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s=100, c='blue', label='Cluster 2')
+#     plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s=100, c='green', label='Cluster 3')
+#     plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s=100, c='cyan', label='Cluster 4')
+#     # plt.scatter(X[y_kmeans == 4, 0], X[y_kmeans == 4, 1], s = 100, c = 'magenta', label = 'Cluster 5')
+#     # In case of 5th Cluster arises
+#     plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=300, c='yellow', label='Centroids')
+#
+#     plt.title('Clusters of Users')
+#     plt.xlabel('Movies')
+#     plt.ylabel('Rating')
+#     plt.legend()
+#     plt.show()
+#
+# def CookClusters(dataset):
+#     dataset = dataset.dropna()
+#
+#     # TODO -- Convert it to NDarrays for Clustering using KMeans
+#
+#     X = dataset.values
+#
+#     # TODO -- Calculate WCSS vs No. Of Clusters to find Optimal no. of Clusters
+#
+#     wcss = []
+#     for i in range(1, 7):
+#         kmeans = KMeans(n_clusters=i, init='k-means++', random_state=0)
+#         kmeans.fit(X)
+#         wcss.append(kmeans.inertia_)
+#     graphCall1(wcss)
+#
+#     # TODO -- Predict Optimal no. of Clusters for each record
+#     # KMeans Clustering
+#     no_of_clusters = 4
+#     kmeans = KMeans(n_clusters=no_of_clusters)    # KMeans clustering
+#     y_kmeans = kmeans.fit_predict(X)                                                # Predicted Clusters for Each record
+#
+#     # Conversion into List from Dataframe
+#     y_km = list(y_kmeans)       # Converting ndarray into List
+#     X_df = pd.DataFrame(X)      # Converting ndarray into Dataframe
+#
+#     # TODO -- Separate out the Clusters into Dataframe based on Prediction and Visualize
+#
+#     cluster = {k:g for k, g in X_df.groupby(y_kmeans)}  # Dividing records into Clusters
+#     # X_df = X_df.dropna(axis=0)
+#
+#     # D0 = cluster[0]
+#     # D1 = cluster[1]
+#     # D2 = cluster[2]
+#     # D3 = cluster[3]
+#
+#     graphCall2(X, y_kmeans, kmeans)
+#
+#     return cluster
+#
+# # TODO -- CALL COOK CLUSTERS and Make Cluster Dataframes
+# cooked = CookClusters(dataset=dataset)
+#
+# D0 = cooked[0]
+# D1 = cooked[1]
+# D2 = cooked[2]
+# D3 = cooked[3]
+#
+# # TODO -- Take Randomized Input of Users >= No. of Clusters
+#
+# ip_df = pd.read_csv("input.csv")
+# count_set = set(ip_df.iloc[0:,0])
+# if len(count_set) > 4:
+#     print "Input File has Less no. of Users than Number of Clusters\nExiting"
+#     exit(0)
+# else:
+#     pass
+#
+# CookedInput = CookClusters(dataset=ip_df)
+#
+#
+# def recipe_2(dataset):
+#     dataset = dataset.dropna()
+#
+#     # TODO -- Convert it to NDarrays for Clustering using KMeans
+#
+#     X = dataset.values
+#
+#     # TODO -- Calculate WCSS vs No. Of Clusters to find Optimal no. of Clusters
+#
+#     wcss = []
+#     for i in range(1, 7):
+#         kmeans = KMeans(n_clusters=i, init='k-means++', random_state=0)
+#         kmeans.fit(X)
+#         wcss.append(kmeans.inertia_)
+#     graphCall1(wcss)
+#
+#     # TODO -- Predict Optimal no. of Clusters for each record
+#     # KMeans Clustering
+#     no_of_clusters = 4
+#     kmeans = KMeans(n_clusters=no_of_clusters, init='k-means++', random_state=0)    # KMeans clustering
+#     y_kmeans = kmeans.fit_predict(X)                                                # Predicted Clusters for Each record
+#
+#     # Conversion into List from Dataframe
+#     y_km = list(y_kmeans)       # Converting ndarray into List
+#     X_df = pd.DataFrame(X)      # Converting ndarray into Dataframe
+#
+#     # TODO -- Separate out the Clusters into Dataframe based on Prediction and Visualize
+#
+#     cluster = {k:g for k, g in X_df.groupby(y_kmeans)}  # Dividing records into Clusters
+#     # X_df = X_df.dropna(axis=0)
+#
+#     # D0 = cluster[0]
+#     # D1 = cluster[1]
+#     # D2 = cluster[2]
+#     # D3 = cluster[3]
+#
+#     graphCall2(X, y_kmeans, kmeans)
+#
+#     return cluster
+
+# -- TODO ------------------------------ KITCHEN 2
+
 import numpy as np
-
-fp = open("shared.pkl")
-shared = pickle.load(fp)
-print "VALUE: ",shared[2:4], "\n TYPE: ", type(shared)
-
-uid = [shared[0], shared[2]]
-cid = [shared[1], shared[3]]
-
-# TODO - Import All Clusters
-
-cl0 = pd.read_csv("cluster0.csv", sep=',')
-cl1 = pd.read_csv("cluster1.csv", sep=',')
-cl2 = pd.read_csv("cluster2.csv", sep=',')
-
-# TODO - Add Cluster identified data to resp. cluster
-cld = pd.read_csv("input.csv", sep=',')
-
-# changing CLD into combined data based on previous results
-df_u1 = cld[cld['uid']==uid[0]]
-df_u2 = cld[cld['uid']==uid[1]]
-
-flag1, flag2 = 0, 0
-print "\n\t\t CLUSTER REC" \
-      "\n\tMODE: \n\t" \
-      "\n\t(1) User Based" \
-      "\n\t(2) Item Based"
-mode = input("Mode no.:")
-if mode is 1:
-     mode = True
-elif mode is 2:
-     mode = False
-
-print "\n\tALGO: \n\t" \
-       "\n\t(1) Vector Cosine" \
-       "\n\t(2) Pearson Co-relation"
-algorithm = input("Algo no.:")
-if algorithm is 1:
-    algorithm = "cosine"
-elif algorithm is 2:
-    algorithm = "pearson"
-
-# for df_u1 i.e First User in List
-# ------------------------------------------------------------------- PRE PROCESSING
-if cid[0] == 0:
-    pre_df01 = cl0.append(df_u1, ignore_index=True); print "U1 in CL0"
-    flag1 = 1
-elif cid[0] == 1:
-    pre_df02 = cl1.append(df_u1, ignore_index=True); print "U1 in CL1"
-    flag1 = 2
-elif cid[0] == 2:
-    pre_df03 = cl2.append(df_u1, ignore_index=True); print "U1 in CL2"
-    flag1 = 3
-else:
-    print "Exception occurred"
-    exit(0)
-
-# for df_u2 i.e Second User in List
-if cid[1] == 0:
-    pre_df11 = cl0.append(df_u2, ignore_index=True); print "U2 in CL0"
-    flag2 = 1
-elif cid[1] == 1:
-    pre_df12 = cl1.append(df_u2, ignore_index=True); print "U2 in CL1"
-    flag2 = 2
-elif cid[1] == 2:
-    pre_df13 = cl2.append(df_u2, ignore_index=True); print "U2 in CL2"
-    flag2 = 3
-else:
-    print "Exception occurred"
-    exit(0)
-
-# Switching on only pre_df's that are created
-# Fetching only created DFs
-post_df1 = pd.DataFrame
-post_df2 = pd.DataFrame
-# --------------------------------------------------------------------- POST PROCESSING
-# PRE PROCESSED CLUSTER 0 -- Named to POST DataFrame1
-if flag1 is 1:
-    print pre_df01
-    post_df1 = pre_df01 #.iloc[0:, :]
-    print "post_df01 ---- PRINTED"
-elif flag1 is 2:
-    print pre_df02
-    post_df1 = pre_df02 #.iloc[0:, :]
-    print "post_df02 ---- PRINTED"
-elif flag1 is 3:
-    print pre_df03
-    post_df1 = pre_df03 #.iloc[0:, :]
-    print "post_df03 ---- PRINTED"
-
-# ----------------------------------------------------- EXPORTING POST PRO C0
-post_df1.to_csv("C0-Processed.csv",sep=',', index_label=False, index=False)
-
-# PRE PROCESSED CLUSTER 1 -- Named to POST DataFrame2
-if flag2 is 1:
-    print pre_df11
-    post_df2 = pre_df11
-    print "post_df11 ---- PRINTED"
-elif flag2 is 2:
-    print pre_df12
-    post_df2 = pre_df12
-    print "post_df12 ---- PRINTED"
-elif flag2 is 3:
-    print pre_df13
-    post_df2 = pre_df13
-    print "post_df13 ---- PRINTED"
-
-# ----------------------------------------------------- EXPORTING POST PRO C1
-post_df2.to_csv("C1-Processed.csv", sep=',', index_label=False, index=False)
-
-tup1 = post_df1.shape
-tup2 = post_df2.shape
-size_of1 = tup1[0]
-size_of2 = tup2[0]
-# APPENDING UNIT TIMESTAMP TO EXPORT USING SurPRISE PKG
-post_df1 = np.append(arr=post_df1, values=np.ones((size_of1,1)).astype(int), axis=1)
-post_df2 = np.append(arr=post_df2, values=np.ones((size_of2,1)).astype(int), axis=1)
-# EXPORT TO CSV & LOAD AGAIN IN PROGRAM
-np.savetxt('po_cluster0.csv', post_df1, delimiter='\t')
-np.savetxt('po_cluster1.csv', post_df2, delimiter='\t')
-
-
-# Predicting Missing Data / NaN Values
-# ------------------------------------------------------------- TRAIL & ERROR
-
-def get_top_n(predictions, n=5):            # ======== FUNCTION START
-    top_n = defaultdict(list)
-    uid = None
-
-    # MAPPING PREDICTIONS TO EACH USER
-    for uid, iid, true_r, est, _ in predictions:
-        top_n[uid].append((iid, est))
-
-    # THEN SORT THE PREDICTIONS FOR EACH USER AND RETRIEVE THE K Highest ones
-    # uid = 0
-    for iid, user_ratings in top_n.items():
-        user_ratings.sort(key=lambda x: x[1], reverse=True)
-        top_n[uid] = user_ratings[:n]
-    return top_n                            # ======== FUNCTION END
-
-sim_op = {'name': algorithm, 'user_based': mode}
-algo = KNNBasic(sim_options=sim_op)
-
-reader = Reader(line_format="user item rating", sep='\t')
-df0 = Dataset.load_from_file('po_cluster0.csv', reader=reader)
-df1 = Dataset.load_from_file('po_cluster1.csv', reader=reader)
-
-
-def pred_cluster0():
-    # START TRAINING
-    trainset = df0.build_full_trainset()
-
-    # APPLYING ALGORITHM KNN Basic
-    algo.train(trainset)
-    print "ALGORITHM USED: \n", algo
-
-    testset = trainset.build_anti_testset()
-    predictions = algo.test(testset=testset)
-
-    top_n0 = get_top_n(predictions, 5)
-
-    # ---------------------------------------------------- PREDICTION VERIFICATION - CL1 (944)
-    print "\t\tINITIATING IN CLUSTER 1\n"
-    search_key = raw_input("Enter User ID:")
-    item_id = raw_input("Enter Item ID:")
-    actual_rating = input("Enter actual Rating:")
-
-    print algo.predict(str(search_key), item_id, actual_rating)
-
-    return top_n0
-
-def pred_cluster1():
-    # START TRAINING
-    trainset = df1.build_full_trainset()
-
-    # APPLYING ALGORITHM KNN Basic
-    algo.train(trainset)
-    print "ALGORITHM USED: \n", algo
-
-    testset = trainset.build_anti_testset()
-    predictions = algo.test(testset=testset)
-
-    top_n1 = get_top_n(predictions, 5)
-
-    # ---------------------------------------------------- PREDICTION VERIFICATION - CL1
-    print "\t\tINITIATING IN CLUSTER 0\n"
-    search_key = raw_input("Enter User ID:")
-    item_id = raw_input("Enter Item ID:")
-    actual_rating = input("Enter actual Rating:")
-
-    print algo.predict(str(search_key), item_id, actual_rating)
-
-    return top_n1
-
-
-# ------------------------------------------------------------------------------------- TRIAL & ERROR MODE
+import pandas as pd
 from sklearn.cluster import KMeans
-def predict():
 
-    ip = pd.read_csv("input.csv",sep=",")
-    X1 = ip.dropna()
-    some_data = []
+ch = int(input("Select Appropriate Matrix\n 1. MainMatrix_IBCF.csv\n 2. MainMatrix_UBCF\n Choice:"))
 
-    kmeans = KMeans(n_clusters=2).fit(X1)
+if ch is 1:
+    data_set = pd.read_csv('MainMatrix_IBCF.csv')
+    data_set = data_set.dropna()
+elif ch is 2:
+    data_set = pd.read_csv('MainMatrix_UBCF.csv')
+    data_set = data_set.dropna()
+else:
+    data_set = pd.DataFrame
 
-    for i in range(len(X1)):
-        some_data = kmeans.predict(X1)
+def recipe_one(dataset):
+    dataset = dataset.dropna()
 
-    centroids = kmeans.cluster_centers_
-    label = kmeans.labels_
+    kmeans = KMeans(n_clusters=4)
+    kmeans.fit(dataset)
 
-    print "Centroids :\n",centroids
-    print "Cluster Nos.:\n", label
-    print some_data
+    labels = kmeans.labels_
+    pd.set_option('display.max_rows', dataset.describe().shape[1])
 
-    # CREATING TRIGGERS
-    z1 = X1['uid'].unique()
-    z2 = pd.unique(some_data)
-    pic_file = []
+    C0 = dataset[labels == 0]
+    C1 = dataset[labels == 1]
+    C2 = dataset[labels == 2]
+    C3 = dataset[labels == 3]
+    C4 = dataset[labels == 4]
 
-    # TODO -------------- STAGE 6 Sequencing Functions
-    for i in range(len(z1)):
-        print "UID:",z1[i]," is in Cluster", z2[i-1] # z2 is reversed due to sorted data struct. SET is used
+    li = [C0, C1, C2, C3, C4]
 
-    # # TODO -------------- STAGE 5 Store the Output to a serialized file
-    #     fp = open("shared.pkl", "w")
-    #     pickle.dump(pic_file, fp)
-    #     print "File PICKLED / SERIALIZED for Cluster Recommendation"
+    return li
 
-# ================================ EXECUTION FLOW =====================================
-top_n0 = pred_cluster0()
-top_n1 = pred_cluster1()
+Fresh_Clusters = recipe_one(dataset=data_set)
 
-# --------------------- GENERATE FULL PREDICTION
+fc0 = Fresh_Clusters[0]
+fc1 = Fresh_Clusters[1]
+fc2 = Fresh_Clusters[2]
+fc3 = Fresh_Clusters[3]
+fc4 = Fresh_Clusters[4]
 
-print "Generating Prediction Matrix for Cluster 0"
-with open('pred_matrix-Cluster0.csv', "w") as output:
-    writer = csv.writer(output, delimiter=',', lineterminator='\n')
-    writer.writerow(['uid', 'iid', 'rat'])
-    for uid, user_ratings in top_n0.items():
-        for (iid, r) in user_ratings:
-            value = uid, iid, r
-            writer.writerow(value)
+input_read = pd.read_csv('input.csv')
+input_df = input_read.pivot(index='uid', columns='iid', values='rat')
 
-print "Generating Prediction Matrix for Cluster 1"
-with open('pred_matrix-Cluster1.csv', "w") as output:
-    writer = csv.writer(output, delimiter=',', lineterminator='\n')
-    writer.writerow(['uid', 'iid', 'rat'])
-    for uid, user_ratings in top_n1.items():
-        for (iid, r) in user_ratings:
-            value = uid, iid, r
-            writer.writerow(value)
+try:
+    young_Clusters = recipe_one(dataset=input_df)
 
+except Exception as e:
+    print "NOTE", e
 
-print "\nPROCESSING COMPLETE: \nCheck files with Name\n" \
-      "pred_matrix-Cluster0.csv\n" \
-      "pred_matrix-Cluster1.csv"
+yc0 = young_Clusters[0]
+yc1 = young_Clusters[1]
+yc2 = young_Clusters[2]
+yc3 = young_Clusters[3]
+yc4 = young_Clusters[4]
