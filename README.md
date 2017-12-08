@@ -1,6 +1,12 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 42 | 8th Dec., Fri
+* Exception handling for new Inputs getting Clustered
+* Deprecation Warning for SuperCluster.py
+* New Inputs have replaced their `NaN` into Zeros
+* Clusters obtained need to merge in Main Clusters
+
 ## DAY 41 | 1st Dec., Fri
 * Resolved the issue of Cluster importing
 * Cleared Dictionary formats into Dataframes
