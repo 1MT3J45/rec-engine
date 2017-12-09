@@ -1,168 +1,24 @@
-# import pandas as pd
-# import numpy as np
-# import matplotlib.pyplot as plt
-# from sklearn.cluster import KMeans
-# import csv
-#
-# # TODO -- Initiate Selection of Matrix Files
-#
-# file=0
-# try:
-#     file = input("Choose your File Name:\n 0. MainMatrix_IBCF.csv\n 1. MainMatrix_UBCF.csv\n ch no (0 or 1):")
-# except Exception as e:
-#     print "NOTE:",e
-#
-# dataset = pd.DataFrame
-# if file is 0:
-#     dataset = pd.read_csv("MainMatrix_IBCF.csv")
-# elif file is 1:
-#     dataset = pd.read_csv("MainMatrix_UBCF.csv")
-#
-#
-# def graphCall1(wcss):
-#     plt.plot(range(1, 7), wcss)
-#     plt.title('The Elbow Method')
-#     plt.xlabel('Number of clusters')
-#     plt.ylabel('WCSS')
-#     plt.show()
-#
-#
-# def graphCall2(X, y_kmeans, kmeans):
-#     # Visualising the clusters
-#     plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s=100, c='red', label='Cluster 1')
-#     plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s=100, c='blue', label='Cluster 2')
-#     plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s=100, c='green', label='Cluster 3')
-#     plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s=100, c='cyan', label='Cluster 4')
-#     # plt.scatter(X[y_kmeans == 4, 0], X[y_kmeans == 4, 1], s = 100, c = 'magenta', label = 'Cluster 5')
-#     # In case of 5th Cluster arises
-#     plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=300, c='yellow', label='Centroids')
-#
-#     plt.title('Clusters of Users')
-#     plt.xlabel('Movies')
-#     plt.ylabel('Rating')
-#     plt.legend()
-#     plt.show()
-#
-# def CookClusters(dataset):
-#     dataset = dataset.dropna()
-#
-#     # TODO -- Convert it to NDarrays for Clustering using KMeans
-#
-#     X = dataset.values
-#
-#     # TODO -- Calculate WCSS vs No. Of Clusters to find Optimal no. of Clusters
-#
-#     wcss = []
-#     for i in range(1, 7):
-#         kmeans = KMeans(n_clusters=i, init='k-means++', random_state=0)
-#         kmeans.fit(X)
-#         wcss.append(kmeans.inertia_)
-#     graphCall1(wcss)
-#
-#     # TODO -- Predict Optimal no. of Clusters for each record
-#     # KMeans Clustering
-#     no_of_clusters = 4
-#     kmeans = KMeans(n_clusters=no_of_clusters)    # KMeans clustering
-#     y_kmeans = kmeans.fit_predict(X)                                                # Predicted Clusters for Each record
-#
-#     # Conversion into List from Dataframe
-#     y_km = list(y_kmeans)       # Converting ndarray into List
-#     X_df = pd.DataFrame(X)      # Converting ndarray into Dataframe
-#
-#     # TODO -- Separate out the Clusters into Dataframe based on Prediction and Visualize
-#
-#     cluster = {k:g for k, g in X_df.groupby(y_kmeans)}  # Dividing records into Clusters
-#     # X_df = X_df.dropna(axis=0)
-#
-#     # D0 = cluster[0]
-#     # D1 = cluster[1]
-#     # D2 = cluster[2]
-#     # D3 = cluster[3]
-#
-#     graphCall2(X, y_kmeans, kmeans)
-#
-#     return cluster
-#
-# # TODO -- CALL COOK CLUSTERS and Make Cluster Dataframes
-# cooked = CookClusters(dataset=dataset)
-#
-# D0 = cooked[0]
-# D1 = cooked[1]
-# D2 = cooked[2]
-# D3 = cooked[3]
-#
-# # TODO -- Take Randomized Input of Users >= No. of Clusters
-#
-# ip_df = pd.read_csv("input.csv")
-# count_set = set(ip_df.iloc[0:,0])
-# if len(count_set) > 4:
-#     print "Input File has Less no. of Users than Number of Clusters\nExiting"
-#     exit(0)
-# else:
-#     pass
-#
-# CookedInput = CookClusters(dataset=ip_df)
-#
-#
-# def recipe_2(dataset):
-#     dataset = dataset.dropna()
-#
-#     # TODO -- Convert it to NDarrays for Clustering using KMeans
-#
-#     X = dataset.values
-#
-#     # TODO -- Calculate WCSS vs No. Of Clusters to find Optimal no. of Clusters
-#
-#     wcss = []
-#     for i in range(1, 7):
-#         kmeans = KMeans(n_clusters=i, init='k-means++', random_state=0)
-#         kmeans.fit(X)
-#         wcss.append(kmeans.inertia_)
-#     graphCall1(wcss)
-#
-#     # TODO -- Predict Optimal no. of Clusters for each record
-#     # KMeans Clustering
-#     no_of_clusters = 4
-#     kmeans = KMeans(n_clusters=no_of_clusters, init='k-means++', random_state=0)    # KMeans clustering
-#     y_kmeans = kmeans.fit_predict(X)                                                # Predicted Clusters for Each record
-#
-#     # Conversion into List from Dataframe
-#     y_km = list(y_kmeans)       # Converting ndarray into List
-#     X_df = pd.DataFrame(X)      # Converting ndarray into Dataframe
-#
-#     # TODO -- Separate out the Clusters into Dataframe based on Prediction and Visualize
-#
-#     cluster = {k:g for k, g in X_df.groupby(y_kmeans)}  # Dividing records into Clusters
-#     # X_df = X_df.dropna(axis=0)
-#
-#     # D0 = cluster[0]
-#     # D1 = cluster[1]
-#     # D2 = cluster[2]
-#     # D3 = cluster[3]
-#
-#     graphCall2(X, y_kmeans, kmeans)
-#
-#     return cluster
-
-# -- TODO ------------------------------ KITCHEN 2
-
 import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 
-ch = int(input("Select Appropriate Matrix\n 1. MainMatrix_IBCF.csv\n 2. MainMatrix_UBCF\n Choice:"))
+try:
+    ch = int(input("Select Appropriate Matrix\n 1. MainMatrix_IBCF.csv\n 2. MainMatrix_UBCF\n Choice:"))
 
-if ch is 1:
-    data_set = pd.read_csv('MainMatrix_IBCF.csv')
-    data_set = data_set.dropna()
-elif ch is 2:
-    data_set = pd.read_csv('MainMatrix_UBCF.csv')
-    data_set = data_set.dropna()
-else:
-    data_set = pd.DataFrame
+    if ch is 1:
+        data_set = pd.read_csv('MainMatrix_IBCF.csv')
+        data_set = data_set.dropna()
+        data_set = data_set.set_index('uid')
+    elif ch is 2:
+        data_set = pd.read_csv('MainMatrix_UBCF.csv')
+        data_set = data_set.dropna()
+        data_set = data_set.set_index('uid')
+    else:
+        data_set = pd.DataFrame
+except Exception as e:
+    print "Caution:",e
 
 def recipe_one(dataset):
-    dataset = dataset.dropna()
 
     kmeans = KMeans(n_clusters=4)
     kmeans.fit(dataset)
@@ -182,23 +38,55 @@ def recipe_one(dataset):
 
 Fresh_Clusters = recipe_one(dataset=data_set)
 
-fc0 = Fresh_Clusters[0]
-fc1 = Fresh_Clusters[1]
-fc2 = Fresh_Clusters[2]
-fc3 = Fresh_Clusters[3]
-fc4 = Fresh_Clusters[4]
+fc0 = Fresh_Clusters[0].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+fc1 = Fresh_Clusters[1].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+fc2 = Fresh_Clusters[2].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+fc3 = Fresh_Clusters[3].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+fc4 = Fresh_Clusters[4].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
 
 input_read = pd.read_csv('input.csv')
 input_df = input_read.pivot(index='uid', columns='iid', values='rat')
 
 try:
+    input_df = input_df.fillna(0)
     young_Clusters = recipe_one(dataset=input_df)
 
 except Exception as e:
     print "NOTE", e
 
-yc0 = young_Clusters[0]
-yc1 = young_Clusters[1]
-yc2 = young_Clusters[2]
-yc3 = young_Clusters[3]
-yc4 = young_Clusters[4]
+yc0 = young_Clusters[0].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+yc1 = young_Clusters[1].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+yc2 = young_Clusters[2].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+yc3 = young_Clusters[3].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+yc4 = young_Clusters[4].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+
+CL0 = fc0.append(yc0)
+CL1 = fc1.append(yc1)
+CL2 = fc2.append(yc2)
+CL3 = fc3.append(yc3)
+CL4 = fc4.append(yc4)
+
+Super_Clusters = [CL0, CL1, CL2, CL3, CL4]
+
+def predictor(clusters):
+    # np.append(arr=post_df1, values=np.ones((size_of1,1)).astype(int), axis=1)
+    # SEGREGATE CLUSTERS
+    cluster0 = clusters[0]
+    cluster1 = clusters[1]
+    cluster2 = clusters[2]
+    cluster3 = clusters[3]
+    cluster4 = clusters[4]
+
+    cluster0 = np.append(arr=cluster0, values=np.ones((cluster0.__len__(),1)).astype(int), axis=1)
+    cluster1 = np.append(arr=cluster1, values=np.ones((cluster1.__len__(), 1)).astype(int), axis=1)
+    cluster2 = np.append(arr=cluster2, values=np.ones((cluster2.__len__(), 1)).astype(int), axis=1)
+    cluster3 = np.append(arr=cluster3, values=np.ones((cluster3.__len__(), 1)).astype(int), axis=1)
+    cluster4 = np.append(arr=cluster4, values=np.ones((cluster4.__len__(), 1)).astype(int), axis=1)
+
+    choice = int(input("Select A Cluster for Prediction of Missing Values: \n Clusters Available (0 - 5)\n Enter your"
+                       " Choice:"))
+# yc0.reset_index(inplace=True) # to get UID in dataframe
+# fc0.loc[yc0.index, yc0.columns] = yc0 # Match columns of UID from dataframe and add values
+#
+# input_df0 = input_df[yc0.uid]
+# temp = pd.concat([fc0, yc0.index(fc0.columns.__len())]) # Merge in Dataframes in Matrix itself
