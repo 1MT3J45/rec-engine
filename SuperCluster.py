@@ -69,6 +69,15 @@ CL4 = fc4.append(yc4)
 
 Super_Clusters = [CL0, CL1, CL2, CL3, CL4]
 
+for i in range(len(Super_Clusters)):
+    Super_Clusters[i] = Super_Clusters[i].replace(0, np.nan)
+
+# TODO -- check NaN in Clusters, execute these lines in Console
+scul0 = Super_Clusters[0]
+print scul0
+
+scul1 = Super_Clusters[0]
+print scul1
 
 def predictor(clusters):
     # np.append(arr=post_df1, values=np.ones((size_of1,1)).astype(int), axis=1)
