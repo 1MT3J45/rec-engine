@@ -1,6 +1,14 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 43 | 9th Dec., Sat
+* Exception Handling at Critical Dataset operations and choices
+* Cluster Formation is now possible, Tested and Verified
+* SuperCluster.py can now handle up to 5 Clusters at a time
+and <br/>will continue to persist in Code family
+* Input.csv Users can now be added into respective clusters
+* Predictor skeleton is ready
+
 ## DAY 42 | 8th Dec., Fri
 * Exception handling for new Inputs getting Clustered
 * Deprecation Warning for SuperCluster.py
