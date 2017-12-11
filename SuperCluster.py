@@ -76,9 +76,12 @@ for i in range(len(Super_Clusters)):
 
 # TODO -- check NaN in Clusters, execute these lines in Console
 scul0 = Super_Clusters[0]
+scul0 = scul0.pivot(index='uid', columns='iid', values='rat')
 print scul0
 
-scul1 = Super_Clusters[0]
+
+scul1 = Super_Clusters[1]
+scul1 = scul1.pivot(index='uid', columns='iid', values='rat')
 print scul1
 
 def predictor(clusters):
