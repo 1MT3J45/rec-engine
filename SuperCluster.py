@@ -76,13 +76,37 @@ for i in range(len(Super_Clusters)):
 
 # TODO -- check NaN in Clusters, execute these lines in Console
 scul0 = Super_Clusters[0]
+scul0.to_csv('scul0.csv', index=False)
+scul0 = pd.read_csv('scul0.csv')
 scul0 = scul0.pivot(index='uid', columns='iid', values='rat')
 print scul0
 
 
 scul1 = Super_Clusters[1]
+scul1.to_csv('scul1.csv', index=False)
+scul1 = pd.read_csv('scul1.csv')
 scul1 = scul1.pivot(index='uid', columns='iid', values='rat')
 print scul1
+
+scul2 = Super_Clusters[2]
+scul2.to_csv('scul2.csv', index=False)
+scul2 = pd.read_csv('scul2.csv')
+scul2 = scul2.pivot(index='uid', columns='iid', values='rat')
+print scul2
+
+scul3 = Super_Clusters[3]
+scul3.to_csv('scul3.csv', index=False)
+scul3 = pd.read_csv('scul3.csv')
+scul3 = scul3.pivot(index='uid', columns='iid', values='rat')
+print scul3
+
+scul4 = Super_Clusters[4]
+scul4.to_csv('scul4.csv', index=False)
+scul4 = pd.read_csv('scul4.csv')
+scul4 = scul4.pivot(index='uid', columns='iid', values='rat')
+print scul4
+
+
 
 def predictor(clusters):
     # np.append(arr=post_df1, values=np.ones((size_of1,1)).astype(int), axis=1)
