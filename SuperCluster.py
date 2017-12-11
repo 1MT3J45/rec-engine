@@ -48,26 +48,28 @@ fc4 = Fresh_Clusters[4].stack().rename_axis(('uid', 'iid')).reset_index(name='ra
 input_read = pd.read_csv('input.csv')
 input_df = input_read.pivot(index='uid', columns='iid', values='rat')
 
+Super_Clusters = []
+
 try:
     input_df = input_df.fillna(0)
     young_Clusters = recipe_one(dataset=input_df)
 
+    yc0 = young_Clusters[0].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+    yc1 = young_Clusters[1].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+    yc2 = young_Clusters[2].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+    yc3 = young_Clusters[3].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+    yc4 = young_Clusters[4].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
+
+    CL0 = fc0.append(yc0)
+    CL1 = fc1.append(yc1)
+    CL2 = fc2.append(yc2)
+    CL3 = fc3.append(yc3)
+    CL4 = fc4.append(yc4)
+
+    Super_Clusters = [CL0, CL1, CL2, CL3, CL4]
 except Exception as e:
     print "NOTE", e
 
-yc0 = young_Clusters[0].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
-yc1 = young_Clusters[1].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
-yc2 = young_Clusters[2].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
-yc3 = young_Clusters[3].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
-yc4 = young_Clusters[4].stack().rename_axis(('uid', 'iid')).reset_index(name='rat')
-
-CL0 = fc0.append(yc0)
-CL1 = fc1.append(yc1)
-CL2 = fc2.append(yc2)
-CL3 = fc3.append(yc3)
-CL4 = fc4.append(yc4)
-
-Super_Clusters = [CL0, CL1, CL2, CL3, CL4]
 
 for i in range(len(Super_Clusters)):
     Super_Clusters[i] = Super_Clusters[i].replace(0, np.nan)
@@ -94,8 +96,21 @@ def predictor(clusters):
     cluster3 = np.append(arr=cluster3, values=np.ones((cluster3.__len__(), 1)).astype(int), axis=1)
     cluster4 = np.append(arr=cluster4, values=np.ones((cluster4.__len__(), 1)).astype(int), axis=1)
 
-    choice = int(input("Select A Cluster for Prediction of Missing Values: \n Clusters Available (0 - 5)\n Enter your"
-                       " Choice:"))
+    try:
+        choice = int(input("Select A Cluster for Prediction of Missing Values: \n Clusters Available (0 - 4)\n Enter your"
+                           " Choice:"))
+        if choice is 0:
+            pass
+        elif choice is 1:
+            pass
+        elif choice is 2:
+            pass
+        elif choice is 3:
+            pass
+        elif choice is 4:
+            pass
+    except Exception as e:
+        print "CHOICE ERROR:"
 
     return 0
 
@@ -110,3 +125,15 @@ def predictor(clusters):
 # plt.xlabel('Number of clusters')
 # plt.ylabel('WCSS')
 # plt.show()
+#
+# plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 100, c = 'red', label = 'Cluster 1')
+# plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 100, c = 'blue', label = 'Cluster 2')
+# plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s = 100, c = 'green', label = 'Cluster 3')
+# plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s = 100, c = 'cyan', label = 'Cluster 4')
+# plt.scatter(X[y_kmeans == 4, 0], X[y_kmeans == 4, 1], s = 100, c = 'magenta', label = 'Cluster 5')
+# plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s = 300, c = 'yellow', label = 'Centroids')
+# plt.title('Clusters of Users')
+# plt.xlabel('Annual Income (k$)')
+# plt.ylabel('Spending Score (1-100)')
+# plt.legend()
+# plt.show()#
