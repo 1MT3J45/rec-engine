@@ -283,7 +283,7 @@ def item_based_cf(co_pe):
 # METHODS DEFINED PRIOR
 
 
-# ---------------------------------------------------------------------UBCF EVAL TEST
+# -------------------------------------------------------------------- UBCF EVAL TEST
 def ubcf_eval(co_pe):
     kfold = input("Enter number of folds required to Evaluate:")
 

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
+from SandBox import Predictor
 
 try:
     ch = int(input("Select Appropriate Matrix\n 1. MainMatrix_IBCF.csv\n 2. MainMatrix_UBCF\n Choice:"))
@@ -75,92 +76,85 @@ for i in range(len(Super_Clusters)):
     Super_Clusters[i] = Super_Clusters[i].replace(0, np.nan)
 
 # TODO -- check NaN in Clusters, execute these lines in Console
-scul0 = Super_Clusters[0]
-scul0.to_csv('scul0.csv', index=False)
-scul0 = pd.read_csv('scul0.csv')
-scul0 = scul0.pivot(index='uid', columns='iid', values='rat')
-print scul0
+sucl0 = Super_Clusters[0]
+sucl0.to_csv('scul0.csv', index=False)
+sucl0 = pd.read_csv('scul0.csv')
+print sucl0.pivot(index='uid', columns='iid', values='rat')
+print sucl0
 
 
-scul1 = Super_Clusters[1]
-scul1.to_csv('scul1.csv', index=False)
-scul1 = pd.read_csv('scul1.csv')
-scul1 = scul1.pivot(index='uid', columns='iid', values='rat')
-print scul1
+sucl1 = Super_Clusters[1]
+sucl1.to_csv('scul1.csv', index=False)
+sucl1 = pd.read_csv('scul1.csv')
+print sucl1.pivot(index='uid', columns='iid', values='rat').head(2)
+print sucl1.head()
 
-scul2 = Super_Clusters[2]
-scul2.to_csv('scul2.csv', index=False)
-scul2 = pd.read_csv('scul2.csv')
-scul2 = scul2.pivot(index='uid', columns='iid', values='rat')
-print scul2
+sucl2 = Super_Clusters[2]
+sucl2.to_csv('scul2.csv', index=False)
+sucl2 = pd.read_csv('scul2.csv')
+print sucl2.pivot(index='uid', columns='iid', values='rat').head(2)
+print sucl2.head()
 
-scul3 = Super_Clusters[3]
-scul3.to_csv('scul3.csv', index=False)
-scul3 = pd.read_csv('scul3.csv')
-scul3 = scul3.pivot(index='uid', columns='iid', values='rat')
-print scul3
+sucl3 = Super_Clusters[3]
+sucl3.to_csv('scul3.csv', index=False)
+sucl3 = pd.read_csv('scul3.csv')
+print sucl3.pivot(index='uid', columns='iid', values='rat').head(2)
+print sucl3.head()
 
-scul4 = Super_Clusters[4]
-scul4.to_csv('scul4.csv', index=False)
-scul4 = pd.read_csv('scul4.csv')
-scul4 = scul4.pivot(index='uid', columns='iid', values='rat')
-print scul4
+sucl4 = Super_Clusters[4]
+sucl4.to_csv('scul4.csv', index=False)
+sucl4 = pd.read_csv('scul4.csv')
+print sucl4.pivot(index='uid', columns='iid', values='rat').head(2)
+print sucl4.head()
+
+cluster0 = np.append(arr=sucl0, values=np.ones((sucl0.__len__(), 1)).astype(int), axis=1)
+cluster1 = np.append(arr=sucl1, values=np.ones((sucl1.__len__(), 1)).astype(int), axis=1)
+cluster2 = np.append(arr=sucl2, values=np.ones((sucl2.__len__(), 1)).astype(int), axis=1)
+cluster3 = np.append(arr=sucl3, values=np.ones((sucl3.__len__(), 1)).astype(int), axis=1)
+cluster4 = np.append(arr=sucl4, values=np.ones((sucl4.__len__(), 1)).astype(int), axis=1)
 
 
+def pre_process_cluster(df):
 
-def predictor(clusters):
-    # np.append(arr=post_df1, values=np.ones((size_of1,1)).astype(int), axis=1)
-    # SEGREGATE CLUSTERS
-    cluster0 = clusters[0]
-    cluster1 = clusters[1]
-    cluster2 = clusters[2]
-    cluster3 = clusters[3]
-    cluster4 = clusters[4]
+    p_df = np.append(arr=df, values=np.ones((df.__len__(), 1)).astype(int), axis=1)
+    p_df = pd.DataFrame(p_df)
+    p_df = p_df.dropna()
+    return p_df
 
-    cluster0 = np.append(arr=cluster0, values=np.ones((cluster0.__len__(), 1)).astype(int), axis=1)
-    cluster1 = np.append(arr=cluster1, values=np.ones((cluster1.__len__(), 1)).astype(int), axis=1)
-    cluster2 = np.append(arr=cluster2, values=np.ones((cluster2.__len__(), 1)).astype(int), axis=1)
-    cluster3 = np.append(arr=cluster3, values=np.ones((cluster3.__len__(), 1)).astype(int), axis=1)
-    cluster4 = np.append(arr=cluster4, values=np.ones((cluster4.__len__(), 1)).astype(int), axis=1)
+algo = int(input("Select Algorithm for Value Prediction \n\t1. Vector Cosine\n\t2. Pearson"))
+A= ''
+if algo is 1:
+    A = 'cosine'
+elif algo is 2:
+    A = 'pearson'
 
-    try:
-        choice = int(input("Select A Cluster for Prediction of Missing Values: \n Clusters Available (0 - 4)\n Enter your"
-                           " Choice:"))
-        if choice is 0:
-            pass
-        elif choice is 1:
-            pass
-        elif choice is 2:
-            pass
-        elif choice is 3:
-            pass
-        elif choice is 4:
-            pass
-    except Exception as e:
-        print "CHOICE ERROR:"
-
-    return 0
-
-# -- TODO -- Visualisation, if needed
-# wcss = []
-# for i in range(1, 7):
-#     kmeans = KMeans(n_clusters=i, init='k-means++', random_state=0)
-#     kmeans.fit(X)
-#     wcss.append(kmeans.inertia_)
-# plt.plot(range(1, 7), wcss)
-# plt.title('The Elbow Method')
-# plt.xlabel('Number of clusters')
-# plt.ylabel('WCSS')
-# plt.show()
-#
-# plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s = 100, c = 'red', label = 'Cluster 1')
-# plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s = 100, c = 'blue', label = 'Cluster 2')
-# plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s = 100, c = 'green', label = 'Cluster 3')
-# plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s = 100, c = 'cyan', label = 'Cluster 4')
-# plt.scatter(X[y_kmeans == 4, 0], X[y_kmeans == 4, 1], s = 100, c = 'magenta', label = 'Cluster 5')
-# plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s = 300, c = 'yellow', label = 'Centroids')
-# plt.title('Clusters of Users')
-# plt.xlabel('Annual Income (k$)')
-# plt.ylabel('Spending Score (1-100)')
-# plt.legend()
-# plt.show()#
+try:
+    choice = int(input("Select A Cluster for Prediction of Missing Values: \n Clusters Available (0 - 4)\n Enter your"
+                       " Choice:"))
+    if choice is 0:
+        cluster = pre_process_cluster(sucl0)
+        path = 'scul0.csv'
+        p = Predictor()
+        p.choices(algorithm=A, processed_df=cluster, df_path=path)
+    elif choice is 1:
+        cluster = pre_process_cluster(sucl1)
+        path = 'scul1.csv'
+        p = Predictor()
+        p.choices(algorithm=A, processed_df=cluster, df_path=path)
+    elif choice is 2:
+        cluster = pre_process_cluster(sucl2)
+        path = 'scul2.csv'
+        p = Predictor()
+        p.choices(algorithm=A, processed_df=cluster, df_path=path)
+    elif choice is 3:
+        cluster = pre_process_cluster(sucl3)
+        path = 'scul3.csv'
+        p = Predictor()
+        p.choices(algorithm=A, processed_df=cluster, df_path=path)
+    elif choice is 4:
+        cluster = pre_process_cluster(sucl4)
+        path = 'scul4.csv'
+        p = Predictor()
+        p.choices(algorithm=A, processed_df=cluster, df_path=path)
+except Exception as e:
+    print "CHOICE ERROR:",e
