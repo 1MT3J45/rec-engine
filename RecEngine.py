@@ -386,10 +386,10 @@ def recommend(query, algo):
     ch = int(input("Ch >"))
     if ch is 1:
         df = pd.read_csv("pred_matrix-full_ubcf.csv")
-        hist = io.open("AlgoHist_ub.txt", "r")
+        hist = io.open("_AlgoHist_ub.txt", "r")
     elif ch is 2:
         df = pd.read_csv("pred_matrix-full_ibcf.csv")
-        hist = io.open("AlgoHist_ib.txt", "r")
+        hist = io.open("_AlgoHist_ib.txt", "r")
     elif ch is 0:
         df = None
         hist = None

@@ -64,7 +64,7 @@ class Predictor:
         sim_op = {'name': co_pe, 'user_based': True}
         algo = KNNBasic(sim_options=sim_op)
 
-        reader = Reader(line_format="user item rating", sep=',', rating_scale=(1, 5))
+        reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
         df = Dataset.load_from_file(df_path, reader=reader) # 'ml-100k/u.data', reader=reader
 
         # START TRAINING
@@ -74,7 +74,7 @@ class Predictor:
         algo.train(trainset)
         print "ALGORITHM USED", co_pe
 
-        f = io.open("_AlgoHist_ub.txt", "wb")
+        f = io.open("cluster/AlgoHist_ub.txt", "wb")
         f.write(repr(co_pe))
         f.close()
 
@@ -112,7 +112,7 @@ class Predictor:
         sim_op = {'name': co_pe, 'user_based': False}
         algo = KNNBasic(sim_options=sim_op)
 
-        reader = Reader(line_format="user item rating", sep=',', rating_scale=(1, 5))
+        reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
         df = Dataset.load_from_file(df_path, reader=reader)
 
         # START TRAINING
@@ -163,7 +163,7 @@ class Predictor:
     def ubcf_eval(self, co_pe, df_path):
         kfold = input("Enter number of folds required to Evaluate:")
 
-        reader = Reader(line_format="user item rating", sep=',', rating_scale=(1, 5))
+        reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
         df = Dataset.load_from_file(df_path, reader=reader)
 
         self.splitter(kfold, df)
@@ -226,7 +226,7 @@ class Predictor:
     def ibcf_eval(self, co_pe, df_path):
         kfold = input("Enter number of folds required to Evaluate:")
 
-        reader = Reader(line_format="user item rating", sep=',', rating_scale=(1, 5))
+        reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
         df = Dataset.load_from_file(df_path, reader=reader)
 
         self.splitter(kfold, df)
@@ -259,7 +259,7 @@ class Predictor:
         sim_op = {'name': co_pe, 'user_based': True}
         algo = KNNBasic(sim_options=sim_op)
 
-        reader = Reader(line_format="user item rating", sep=',', rating_scale=(1, 5))
+        reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
         df = Dataset.load_from_file(df_path, reader=reader)
 
         # START TRAINING
@@ -297,7 +297,7 @@ class Predictor:
         sim_op = {'name': co_pe, 'user_based': False}
         algo = KNNBasic(sim_options=sim_op)
 
-        reader = Reader(line_format="user item rating", sep=',', rating_scale=(1, 5))
+        reader = Reader(line_format="user item rating", sep='\t', rating_scale=(1, 5))
         df = Dataset.load_from_file(df_path, reader=reader)
 
         # START TRAINING
@@ -417,8 +417,8 @@ class Predictor:
         if choice == 0:  # ------------------------------------------------- Only Integers to be accepted
             print "Try appropriate options!"
         else:
-            while choice <= menu_length:  # ---------------------------------------------- LOOPING CHOICE (PREDICTION MENU)
-                if choice == 1:  # --------------------------------------------------- (1) PREDICT RATING FOR USER OR MOVIE
+            while choice <= menu_length:  # ---------------------------------------- LOOPING CHOICE (PREDICTION MENU)
+                if choice == 1:  # --------------------------------------------- (1) PREDICT RATING FOR USER OR MOVIE
                     print "\n\t\tPrediction Menu:\n\t\t1. User Based\n\t\t2. Item Based\n\t\tType 0 to exit\n\t\t"
                     print "\t\tTRIGGERS:\n\t\t Algorithm:", algorithm
                     ch1 = input("Choice:")
