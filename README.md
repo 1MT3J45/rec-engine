@@ -1,6 +1,12 @@
 # rec-engine
 A Primary Recommendation Engine &amp; Analytics tool built using Python Pandas, SurPRISE and IO
 
+## DAY 44 | 15 Dec., Fri
+* Bug removed from SandBox package
+* SuperCluster needs to re-run for every function of SandBox
+* Predictions with Movie Names is still buggy
+* Evaluation and related menu functions are running (In dry run scenario only)
+
 ## DAY 43 | 9th Dec., Sat
 * Exception Handling at Critical Dataset operations and choices
 * Cluster Formation is now possible, Tested and Verified
