@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from SandBox import Predictor
+import matplotlib.pyplot as plt
 
 try:
     ch = int(input("Select Appropriate Matrix\n 1. MainMatrix_IBCF\n 2. MainMatrix_UBCF\n Choice:"))
@@ -21,6 +22,18 @@ except Exception as e:
 
 
 def recipe_one(dataset):
+
+    wcss = []
+    for i in range(1, 11):
+        kmeans = KMeans(n_clusters=i, init='k-means++', max_iter=300, n_init=10, random_state=0)
+        kmeans.fit(X=dataset)
+        wcss.append(kmeans.inertia_)
+    plt.plot(range(1, 11), wcss)
+    plt.title("ELBOW CURVE")
+    plt.xlabel("No. of Clusters")
+    plt.ylabel("WCSS")
+    plt.plot()
+
     kmeans = KMeans(n_clusters=4)
     kmeans.fit(dataset)
 
@@ -80,7 +93,7 @@ sucl0 = Super_Clusters[0]
 # sucl0 = np.append(arr=sucl0, values=np.ones((sucl0.__len__(), 1)).astype(int), axis=1)
 sucl0 = pd.DataFrame(sucl0).dropna()
 sucl0.to_csv('sucl0.csv', index=False, header=False, sep='\t')
-sucl0 = pd.read_csv('sucl0.csv', sep='\t')
+sucl0 = pd.read_csv('sucl0.csv')
 # print sucl0.pivot(index='uid', columns='iid', values='rat')
 print sucl0
 
