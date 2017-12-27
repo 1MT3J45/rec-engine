@@ -3,7 +3,7 @@ from collections import defaultdict
 import io
 import pandas as pd
 import csv
-from recsys.evaluation.decision import PrecisionRecallF1
+# from recsys.evaluation.decision import PrecisionRecallF1
 import time
 import numpy as np
 
@@ -391,17 +391,17 @@ class Predictor:
         ib_pred = list(df2.ix[::, 'rat'])
         ds_prev = list(dataset.ix[::, 'Rating'])
 
-        decision = PrecisionRecallF1()
-        decision.load(ground_truth=ub_pred, test=ib_pred)
-        result = decision.compute()
-        print "PRF1 w.r.t. IBCF to UBCF Pred Matrix\nRECALL:", result[0], "\nPRECISION:", result[1], "\nF1:", result[
-            2], "\n"
-
-        decision.load(ground_truth=ds_prev, test=ib_pred)
-        result = decision.compute()
-        print "PRF1 w.r.t. IBCF Pred Matrix to U.DATA \nRECALL:", result[0], "\nPRECISION:", result[1], "\nF1:", result[
-            2]
-        print "\n"
+        # decision = PrecisionRecallF1()
+        # decision.load(ground_truth=ub_pred, test=ib_pred)
+        # result = decision.compute()
+        # print "PRF1 w.r.t. IBCF to UBCF Pred Matrix\nRECALL:", result[0], "\nPRECISION:", result[1], "\nF1:", result[
+        #     2], "\n"
+        #
+        # decision.load(ground_truth=ds_prev, test=ib_pred)
+        # result = decision.compute()
+        # print "PRF1 w.r.t. IBCF Pred Matrix to U.DATA \nRECALL:", result[0], "\nPRECISION:", result[1], "\nF1:", result[
+        #     2]
+        # print "\n"
 
     # --------------------------------------------------------------------- END REC GRAPH
 
